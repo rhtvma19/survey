@@ -63,8 +63,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
 app.use(bodyParser.json());
 
+app.use(express.static(process.cwd()+"/public/dist/public-survey/"));
+app.get('/', (req,res) => {
+  res.sendFile(process.cwd()+"/public/dist/public-survey/index.html");
+});
+
 app.get('/check', (req, res) => {
-  res.json({ "message": "Express is up" });
+  res.json({ "message": "Express is up- by me" });
 });
 
 // Login route - here we will generate the token - copy the token generated in the input

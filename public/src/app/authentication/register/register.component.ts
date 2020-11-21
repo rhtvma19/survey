@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/common/services/api.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +17,7 @@ export class RegisterComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
 
-  constructor(private _apiService: ApiService) { }
+  constructor(private _apiService: ApiService, public router: Router) { }
 
 
   ngOnInit(): void {
@@ -27,18 +28,17 @@ export class RegisterComponent implements OnInit {
   }
 
   registerUser(): void {
-    debugger;
     if (this.form.status === 'VALID') {
       console.log(this.form.value);
     }
 
     const data = this.form.value;
-
     this._apiService.create('register', data)
       .subscribe(
         response => {
           console.log(response);
           this.submitted = true;
+          this.router.navigate(['/home']);
         },
         error => {
           console.log(error);

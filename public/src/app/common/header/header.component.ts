@@ -8,9 +8,13 @@ import { AuthService } from '../services/auth/auth.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
+  isLoggedIn = false;
   constructor(public auth: AuthService, public router: Router) { }
   ngOnInit(): void {
+
+    setTimeout(() => {
+      this.isLoggedIn = this.auth.isLoggedIn();
+    }, 500);
   }
 
   logout() {

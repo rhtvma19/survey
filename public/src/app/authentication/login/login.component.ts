@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/common/services/api.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,10 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
 
-  constructor(private _apiService: ApiService, public router: Router) { }
+  constructor(
+    private _apiService: ApiService,
+    public router: Router,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -41,6 +45,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/home']);
         },
         error => {
+          this.toastr.error(error.error.message);
           console.log(error);
         });
   }

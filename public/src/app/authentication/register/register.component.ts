@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/common/services/api.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -17,7 +17,10 @@ export class RegisterComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
 
-  constructor(private _apiService: ApiService, public router: Router) { }
+  constructor(
+    private _apiService: ApiService,
+    public router: Router,
+    private toastr: ToastrService) { }
 
 
   ngOnInit(): void {
@@ -38,9 +41,11 @@ export class RegisterComponent implements OnInit {
         response => {
           console.log(response);
           this.submitted = true;
+          this.toastr.success(response.message || 'Registration Successful');
           this.router.navigate(['/home']);
         },
         error => {
+          this.toastr.error(error.error.message);
           console.log(error);
         });
   }

@@ -63,21 +63,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
 app.use(bodyParser.json());
 
-app.use(express.static(process.cwd()+"/public/dist/public-survey/"));
-app.get('/', (req,res) => {
-  res.sendFile(process.cwd()+"/public/dist/public-survey/index.html");
+app.use(express.static(process.cwd() + "/public/dist/public-survey/"));
+app.get('/', (req, res) => {
+  return res.sendFile(process.cwd() + "/public/dist/public-survey/index.html");
 });
 
 app.get('/check', (req, res) => {
-  res.json({ "message": "Express is up- by me" });
+  return res.json({ "message": "Express is up- by me" });
 });
 
 // Login route - here we will generate the token - copy the token generated in the input
 app.post("/login", async (req, res) => {
 
   if (req.body.email && req.body.password) {
-    var email = req.body.email;
-    var password = req.body.password;
     try {
       const user = await UserModel.findOne({ email: req.body.email });
       console.log(user);
@@ -88,15 +86,15 @@ app.post("/login", async (req, res) => {
         // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
         var payload = { id: user.id };
         var token = jwt.sign(payload, jwtOptions.secretOrKey);
-        res.json({ message: "ok", token: token });
+        return res.json({ message: "ok", token: token });
       } else {
-        res.status(401).json({ message: "passwords did not match" });
+        return res.status(401).json({ message: "passwords did not match" });
       }
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message });
     }
   } else {
-    res.status(400).json({ message: "Invalid Inputs" });
+    return res.status(400).json({ message: "Invalid Inputs" });
   }
 });
 
@@ -110,19 +108,28 @@ app.post('/register', (req, res, next) => {
     password: req.body.password
   };
 
-  UserModel.create(user, (err, userResult) => {
-    if (err) {
-      res.status(400).json({ message: "Error while user registration" });
+  UserModel.findOne({ $or: [{ username: user.username }, { email: user.email }] }, (err, doc) => {
+    //The User doesn't exist => Add New User
+    if (!doc) {
+      UserModel.create(user, (err, userResult) => {
+        if (err) {
+          return res.status(400).json({ message: "There was a problem registering the user." }).end();
+        }
+        return res.json({ message: "The User Created Successfully", data: userResult }).end();
+      });
     }
-    res.json({ message: "User created", data: userResult });
+    else {
+      return res.status(400).json({ message: "The User/Email is Already Exists." }).end();
+    }
   });
+
 });
 
 
 // now there can be as many route you want that must have the token to run, otherwise will show unauhorized access. Will show success 
 // when token auth is successfilly passed.
 app.get("/secret", passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.json("Success! You can not see this without a token");
+  return res.json("Success! You can not see this without a token");
 });
 
 
@@ -139,7 +146,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.send('error');
+  return res.send('error');
 });
 
 module.exports = app;

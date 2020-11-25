@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
           console.log(response);
           this.submitted = true;
           this.toastr.success(response.message || 'Registration Successful');
-          this.router.navigate(['/home']);
+          this.router.navigate(['/login']);
         },
         error => {
           this.toastr.error(error.error.message);

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
+import { DataService } from '../services/data.service';
 
 @Component({
   selector: 'app-header',
@@ -9,15 +10,18 @@ import { AuthService } from '../services/auth/auth.service';
 })
 export class HeaderComponent implements OnInit {
   isLoggedIn = false;
-  constructor(public auth: AuthService, public router: Router) { }
+  constructor(public auth: AuthService, public router: Router, public dataService: DataService) { }
   ngOnInit(): void {
-
-    setTimeout(() => {
-      this.isLoggedIn = this.auth.isLoggedIn();
-    }, 500);
+    this.dataService.getProfileObs().subscribe(profile => this.isLoggedIn = profile);
   }
 
   logout() {
     this.auth.logout();
+    this.dataService.setProfileObs(false);
+  }
+
+  openSurvey() {
+    window.location.href = '/#/survey';
+    window.location.reload();
   }
 }

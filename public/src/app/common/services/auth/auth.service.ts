@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(public jwtHelper: JwtHelperService, public router: Router) { }
+  constructor(
+    public jwtHelper: JwtHelperService,
+    public router: Router,
+    private toastr: ToastrService) { }
   // ...
   public isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
@@ -23,5 +27,6 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     this.router.navigate(['/home']);
+    this.toastr.success('User Logout Successful');
   }
 }

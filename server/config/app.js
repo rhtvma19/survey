@@ -24,6 +24,7 @@ mongoDB.once('open', () => {
 });
 
 const UserModel = require('../models/user');
+const SurveyModel = require('../models/survey');
 
 
 // strategy for using web token authentication
@@ -39,18 +40,10 @@ var strategy = new JwtStrategy(jwtOptions, async (jwt_payload, next) => {
     if (!user) {
       return next(null, false, { message: 'User not found' });
     }
-
-    // const validate = await user.isValidPassword(password);
-
-    // if (!validate) {
-    //   return next(null, false, { message: 'Wrong Password' });
-    // }
-
     return next(null, user, { message: 'Logged in Successfully' });
   } catch (error) {
     return next(null, false, error);
   }
-
 });
 passport.use(strategy);
 
@@ -98,17 +91,16 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
-
 // POST process the New user create - CREATE
 app.post('/register', (req, res, next) => {
   const user = {
-    username: req.body.username,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
     email: req.body.email,
     password: req.body.password
   };
 
-  UserModel.findOne({ $or: [{ username: user.username }, { email: user.email }] }, (err, doc) => {
+  UserModel.findOne({ $or: [{ email: user.email }] }, (err, doc) => {
     //The User doesn't exist => Add New User
     if (!doc) {
       UserModel.create(user, (err, userResult) => {
@@ -122,8 +114,9 @@ app.post('/register', (req, res, next) => {
       return res.status(400).json({ message: "The User/Email is Already Exists." }).end();
     }
   });
-
 });
+
+
 
 
 // now there can be as many route you want that must have the token to run, otherwise will show unauhorized access. Will show success 

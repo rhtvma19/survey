@@ -7,10 +7,18 @@
       <h3>New Account?</h3>
       <div class="form-holder">
         <span class="lnr lnr-user"></span>
-        <input type="text" class="form-control" placeholder="Username" formControlName="username">
-        <div *ngIf="f.username.touched && f.username.invalid" class="alert alert-danger">
-          <div *ngIf="f.username.errors.required">Name is required.</div>
-          <div *ngIf="f.username.errors.minlength">Name should be 3 character.</div>
+        <input type="text" class="form-control" placeholder="Firstname" formControlName="firstname">
+        <div *ngIf="f.firstname.touched && f.firstname.invalid" class="alert alert-danger">
+          <div *ngIf="f.firstname.errors.required">Firstname is required.</div>
+          <div *ngIf="f.firstname.errors.minlength">Firstname should be 3 character.</div>
+        </div>
+      </div>
+      <div class="form-holder">
+        <span class="lnr lnr-user"></span>
+        <input type="text" class="form-control" placeholder="Lastname" formControlName="lastname">
+        <div *ngIf="f.lastname.touched && f.lastname.invalid" class="alert alert-danger">
+          <div *ngIf="f.lastname.errors.required">Lastname is required.</div>
+          <div *ngIf="f.lastname.errors.minlength">Lastname should be 3 character.</div>
         </div>
       </div>
       <div class="form-holder">

@@ -46,7 +46,6 @@ const SurveySchema = new Schema({
     },
 });
 
-SurveySchema.set('timestamps', true);
 
 const SurveyModel = mongoose.model('survey', SurveySchema);
 

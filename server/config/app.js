@@ -117,6 +117,49 @@ app.post('/register', (req, res, next) => {
 });
 
 
+// POST process the New survey - CREATE
+app.post('/survey', (req, res, next) => {
+  const survey = {
+    age,
+    country,
+    email,
+    firstname,
+    gender,
+    lastname,
+    q3additional_message,
+    q5additional_message1,
+    q5additional_message2,
+    q5additional_message3,
+    question_1,
+    question_2,
+    question_3,
+    terms,
+  } = req.body;
+
+  SurveyModel.create(survey, (err, surveyResult) => {
+    if (err) {
+      return res.status(400).json({ message: "There was a problem creating survey." }).end();
+    }
+    return res.json({ message: "Survey Created Successfully", data: surveyResult }).end();
+  });
+});
+
+app.get('/survey', (req, res, next) => {
+  SurveyModel.find({}, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching widgets!',
+        error: err
+      });
+    }
+
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: surveys || [],
+    });
+  });
+});
 
 
 // now there can be as many route you want that must have the token to run, otherwise will show unauhorized access. Will show success 

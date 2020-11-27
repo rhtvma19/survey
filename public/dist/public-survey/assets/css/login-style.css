@@ -173,14 +173,7 @@ button {
     height: 100%;
     z-index: 1;
     background-color: rgba(52, 152, 253, 0.25);
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    transition: all 0.3s;
-    -webkit-transform: translate(-100%, 0);
-    transform: translate(-100%, 0);
-    -webkit-transition-timing-function: cubic-bezier(0.75, 0, 0.125, 1);
-    transition-timing-function: cubic-bezier(0.75, 0, 0.125, 1); }
+  }
 
 @media (max-width: 991px) {
   .inner {

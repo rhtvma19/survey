@@ -16,6 +16,8 @@ import { SurveyComponent } from './pages/survey/survey.component';
 import { HeaderComponent } from './common/header/header.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AllSurveysComponent } from './pages/all-surveys/all-surveys.component';
+import { MaterialModule } from './common/material.module';
+import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
 
 @NgModule({
   declarations: [
@@ -26,11 +28,13 @@ import { AllSurveysComponent } from './pages/all-surveys/all-surveys.component';
     HomeComponent,
     SurveyComponent,
     HeaderComponent,
-    AllSurveysComponent
+    AllSurveysComponent,
+    CreateSurveyComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    MaterialModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

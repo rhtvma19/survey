@@ -181,12 +181,6 @@ button {
     transform: translate(-100%, 0);
     -webkit-transition-timing-function: cubic-bezier(0.75, 0, 0.125, 1);
     transition-timing-function: cubic-bezier(0.75, 0, 0.125, 1); }
-  button:after {
-    -webkit-transition-delay: 0.2s;
-    transition-delay: 0.2s; }
-  button:hover:before, button:hover:after {
-    -webkit-transform: translate(0, 0);
-    transform: translate(0, 0); }
 
 @media (max-width: 991px) {
   .inner {

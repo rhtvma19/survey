@@ -13,7 +13,10 @@ const baseURL = environment.apiUrl;
 })
 export class ApiService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) { 
+    console.log('Base URL: ');
+    console.log(baseURL);
+  }
 
 
   create(URL, data): Observable<any> {

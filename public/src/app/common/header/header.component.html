@@ -15,9 +15,9 @@
       <li *ngIf="isLoggedIn" class="nav-item">
         <a class="nav-link" routerLink="/all-survey">All Survey</a>
       </li>
-      <li class="nav-item">
+      <li *ngIf="!isLoggedIn" class="nav-item">
         <!-- routerLink="/survey" (click)="openSurvey()"-->
-        <a class="nav-link" routerLink="/survey">Take Survey</a>
+        <a class="nav-link" (click)="openSurvey()">Take Survey</a>
       </li>
     </ul>
     <button *ngIf="isLoggedIn; else showLogin" style="width: 101px;"

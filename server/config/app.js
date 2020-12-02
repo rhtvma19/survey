@@ -119,33 +119,27 @@ app.post('/register', (req, res, next) => {
 
 // POST process the New survey - CREATE
 app.post('/survey', (req, res, next) => {
+  console.log(req.body);
   const survey = {
-    age,
-    country,
-    email,
-    firstname,
-    gender,
-    lastname,
-    q3additional_message,
-    q5additional_message1,
-    q5additional_message2,
-    q5additional_message3,
-    question_1,
-    question_2,
-    question_3,
-    terms,
+    type,
+    title,
+    user,
+    expiryDate,
+    question
   } = req.body;
 
   SurveyModel.create(survey, (err, surveyResult) => {
     if (err) {
+      console.log(err);
       return res.status(400).json({ message: "There was a problem creating survey." }).end();
     }
     return res.json({ message: "Survey Created Successfully", data: surveyResult }).end();
   });
 });
 
-app.get('/survey', (req, res, next) => {
-  SurveyModel.find({}, (err, surveys) => {
+app.get('/survey/user/:userId', (req, res, next) => {
+  const userId = req.params.userId;
+  SurveyModel.find({ user: userId }, (err, surveys) => {
     if (err) {
       return res.status(404).json({
         message: 'Error while fetching widgets!',
@@ -157,6 +151,44 @@ app.get('/survey', (req, res, next) => {
     return res.status(200).json({
       message: 'ok',
       data: surveys || [],
+    });
+  });
+});
+
+
+
+app.delete('/survey/:id', (req, res, next) => {
+  const id = req.params.id;
+  SurveyModel.delete({ _id: id }, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while deleting survey!',
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok'
+    });
+  });
+});
+
+
+
+app.get('/survey/:id', (req, res, next) => {
+  const id = req.params.id;
+  console.log(id);
+  SurveyModel.find({ _id: id }, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching survey! ' + id,
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: surveys[0] || [],
     });
   });
 });

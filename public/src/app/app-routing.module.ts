@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'survey', component: SurveyComponent },
   { path: 'all-survey', canActivate: [AuthGuard], component: AllSurveysComponent },
   { path: 'create-survey', canActivate: [AuthGuard], component: CreateSurveyComponent },
+  { path: 'survey-edit/:id', canActivate: [AuthGuard], component: CreateSurveyComponent },
   { path: 'about', component: AboutComponent },
   { path: '**', component: LoginComponent },
 ];

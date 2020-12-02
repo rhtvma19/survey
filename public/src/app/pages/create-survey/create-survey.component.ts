@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators, FormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { ApiService } from 'src/app/common/services/api.service';
+import { AuthService } from 'src/app/common/services/auth/auth.service';
 import { Survey, Question, Option } from './data-models';
 export interface QuestionType {
   value: string;
@@ -22,22 +26,29 @@ export class CreateSurveyComponent implements OnInit {
     { id: 1, value: 'HR' }
   ];
 
-
+  id = 0;
+  isAddMode = true;
   questions: QuestionType[] = [
     { value: 'Single choice', viewValue: 'Single choice' },
     { value: 'Multi choice', viewValue: 'Multi choice' },
     { value: 'Text', viewValue: 'Text' }
   ];
 
-
   constructor(
-    // private surveyService: SurveyService,
-
-  ) { }
+    private apiService: ApiService,
+    public router: Router,
+    private route: ActivatedRoute,
+    public authService: AuthService,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.initForm();
+    this.id = this.route.snapshot.params['id'];
+    this.isAddMode = !this.id;
 
+    if (!this.isAddMode) {
+      this.getByID(this.id);
+    }
   }
 
   private initForm() {
@@ -49,7 +60,7 @@ export class CreateSurveyComponent implements OnInit {
       surveyTitle: new FormControl(surveyTitle, [Validators.required]),
       surveyType: new FormControl(surveyType, [Validators.required]),
       surveyQuestions: new FormArray([]),
-      IsAnonymous: new FormControl(false, [Validators.required])
+      expiryDate: new FormControl(false, [Validators.required])
     });
     this.onAddQuestion();
   }
@@ -106,10 +117,10 @@ export class CreateSurveyComponent implements OnInit {
 
     const control = this.surveyForm.get('surveyQuestions') as FormArray;
 
-    (this.surveyForm.controls.surveyQuestions['controls'][index].controls.questionGroup).addControl('options', options);
-    (this.surveyForm.controls.surveyQuestions['controls'][index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
+    (this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup).addControl('options', options);
+    (this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
 
-    this.clearFormArray((<FormArray>this.surveyForm.controls.surveyQuestions['controls'][index].controls.questionGroup.controls.options));
+    this.clearFormArray((this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup.controls.options as FormArray));
 
     this.addOption(index);
     this.addOption(index);
@@ -125,96 +136,104 @@ export class CreateSurveyComponent implements OnInit {
 
   addOption(index) {
     const optionGroup = new FormGroup({
-      'optionText': new FormControl('', Validators.required),
+      optionText: new FormControl('', Validators.required),
     });
-    (<FormArray>this.surveyForm.controls.surveyQuestions['controls'][index].controls.questionGroup.controls.options).push(optionGroup);
+    (this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup.controls.options as FormArray).push(optionGroup);
   }
 
   removeOption(questionIndex, itemIndex) {
-    (<FormArray>this.surveyForm.controls.surveyQuestions['controls'][questionIndex].controls.questionGroup.controls.options).removeAt(itemIndex);
+    (this.surveyForm.controls.surveyQuestions.controls[questionIndex].controls.questionGroup.controls.options as FormArray).removeAt(itemIndex);
   }
 
-
-
-
-
-
-
-  postSurvey() {
-
+  prepareSurvey() {
     const formData = this.surveyForm.value;
     console.log(formData);
-
-    console.log();
-    const ID = 0;
-    const Type = formData.surveyType;
-    const Title = formData.surveyTitle;
-    const IsDeleted = false;
-    const IsAnonymous = formData.IsAnonymous;
-    //  let Question: Question[] = [];
-    const Questions = [];
+    const id = 0;
+    const type = formData.surveyType;
+    const title = formData.surveyTitle;
+    const expiryDate = formData.expiryDate;
+    const user = this.authService.getUserId();
+    const questionnaires = [];
 
     const surveyQuestions = formData.surveyQuestions;
-    const optionArray = formData.surveyQuestions[0].questionGroup.options[0].optionText;
-    const survey = new Survey(ID, Type, Title, IsDeleted, IsAnonymous, Questions);
-
-
+    // const optionArray = formData.surveyQuestions[0].questionGroup.options[0].optionText;
+    const survey = new Survey(user, type, title, expiryDate, questionnaires);
     surveyQuestions.forEach((question, index, array) => {
-
-
       const questionItem = {
-        ID: 0,
-        'Type': question.questionType,
-        'Text': question.questionTitle,
-        'options': [],
-        'Required': false,
-        'Remarks': '',
-        'hasRemarks': false
-
+        // id: 0,
+        type: question.questionType,
+        text: question.questionTitle,
+        options: []
       };
-      if (question.questionGroup.hasOwnProperty('showRemarksBox')) {
-        questionItem.hasRemarks = question.questionGroup.showRemarksBox;
-      }
-
-
+      // if (question.questionGroup.hasOwnProperty('showRemarksBox')) {
+      //   questionItem.hasRemarks = question.questionGroup.showRemarksBox;
+      // }
       if (question.questionGroup.hasOwnProperty('options')) {
-
-
-
         question.questionGroup.options.forEach(option => {
           const optionItem: Option = {
-            'ID': 0,
-            'OptionText': option.optionText,
-            'OptionColor': '',
-            'hasRemarks': false
+            // id: 0,
+            optiontext: option.optionText,
+            optioncolor: ''
 
           };
           questionItem.options.push(optionItem);
         });
       }
-
-
-      survey.Question.push(questionItem);
-
-
+      survey.questionnaires.push(questionItem);
     });
-
 
     console.log(survey);
     console.log('posting survey');
-
-
+    return survey;
   }
 
+  add(body) {
+    this.apiService.post('survey', body)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.toastr.success(response.message || 'Survey creation Successful');
+          // this.router.navigate(['/login']);
+        },
+        error => {
+          this.toastr.error(error.error.message);
+          console.log(error);
+        });
+  }
+
+  edit(body) {
+    this.apiService.put('survey', body, this.id)
+      .subscribe(
+        (data: any) => {
+          this.toastr.success('survey updated successful');
+          this.router.navigate(['/survey']);
+        },
+        (error: any) => {
+          // this.toastr.error(error);
+          console.log(error);
+        });
+  }
+
+  getByID(id: number) {
+    this.apiService.get('survey/' + id)
+      .subscribe(
+        (result: any) => {
+          this.toastr.success('Survey fetch successfull');
+          this.surveyForm.patchValue(result.data);
+        },
+        (error: any) => {
+          // this.toastr.error(error);
+          console.log(error);
+        });
+  }
 
   onSubmit() {
-
-    this.postSurvey();
-
+    if (this.isAddMode) {
+      this.add(this.prepareSurvey());
+    } else {
+      this.edit(this.prepareSurvey());
+    }
   }
-
-
-
 
 
 

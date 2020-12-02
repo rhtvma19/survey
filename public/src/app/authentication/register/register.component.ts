@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit {
   });
 
   constructor(
-    private _apiService: ApiService,
+    private apiService: ApiService,
     public router: Router,
     private toastr: ToastrService) { }
 
@@ -37,7 +37,7 @@ export class RegisterComponent implements OnInit {
     }
 
     const data = this.form.value;
-    this._apiService.create('register', data)
+    this.apiService.post('register', data)
       .subscribe(
         response => {
           console.log(response);

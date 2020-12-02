@@ -30,7 +30,7 @@ export class SurveyComponent implements OnInit {
   });
 
   constructor(
-    private _apiService: ApiService,
+    private apiService: ApiService,
     public router: Router,
     private toastr: ToastrService) { }
 
@@ -48,7 +48,7 @@ export class SurveyComponent implements OnInit {
     }
     console.log(this.form.value);
     const data = this.form.value;
-    this._apiService.create('survey', data)
+    this.apiService.create('survey', data)
       .subscribe(
         response => {
           console.log(response);

@@ -91,6 +91,27 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+app.get('/user/:userId', (req, res, next) => {
+  const userId = req.params.userId;
+  UserModel.find({ _id: userId }, (err, user) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching User!',
+        error: err
+      });
+    }
+
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: user[0] || [],
+    });
+  });
+});
+
+
+
 // POST process the New user create - CREATE
 app.post('/register', (req, res, next) => {
   const user = {
@@ -135,6 +156,28 @@ app.post('/survey', (req, res, next) => {
     }
     return res.json({ message: "Survey Created Successfully", data: surveyResult }).end();
   });
+});
+
+
+// POST process the New survey - CREATE
+app.post('/survey/:id', (req, res, next) => {
+  console.log(req.body);
+  const survey = {
+    type,
+    title,
+    user,
+    expirydate,
+    questionnaires
+  } = req.body;
+
+  SurveyModel.findOneAndUpdate({ _id: req.params.id }, { $set: survey }, { upsert: true, useFindAndModify: false },
+    (err, surveyResult) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ message: "There was a problem update survey." }).end();
+      }
+      return res.json({ message: "Survey Updated Successfully", data: surveyResult }).end();
+    });
 });
 
 app.get('/survey/user/:userId', (req, res, next) => {

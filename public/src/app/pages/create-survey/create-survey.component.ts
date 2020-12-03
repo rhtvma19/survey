@@ -40,6 +40,7 @@ export class CreateSurveyComponent implements OnInit {
     private apiService: ApiService,
     public router: Router,
     private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
     public authService: AuthService,
     private toastr: ToastrService) { }
 
@@ -58,10 +59,10 @@ export class CreateSurveyComponent implements OnInit {
     const type = '';
     const questionnaires = new FormArray([]);
 
-    this.surveyForm = new FormGroup({
+    this.surveyForm = this.formBuilder.group({
       title: new FormControl(title, [Validators.required]),
       type: new FormControl(type, [Validators.required]),
-      questionnaires: new FormArray([]),
+      questionnaires: this.formBuilder.array([]),
       expirydate: new FormControl(Date.now(), [Validators.required])
     });
   }
@@ -80,17 +81,16 @@ export class CreateSurveyComponent implements OnInit {
   onSeletquestiontypeMain(e) {
     this.questiontype = e.value;
     const length = (this.surveyForm.get('questionnaires') as FormArray).length;
-
-    // for (let i = 0; i <= length; i++) {
-    //   const control = this.surveyForm.get('questionnaires') as FormArray;
-    //   control.removeAt(i);
-    // }
-
     this.clearFormArray((this.surveyForm.get('questionnaires') as FormArray));
     this.onAddQuestion();
 
   }
-
+  setQuestionnaires(que) {
+    let control = <FormArray>this.surveyForm.controls.questionnaires;
+    que.forEach(x => {
+      control.push(this.formBuilder.group(x));
+    });
+  }
   onAddQuestion() {
     console.log(this.surveyForm);
     const surveyQuestionItem = new FormGroup({
@@ -218,7 +218,7 @@ export class CreateSurveyComponent implements OnInit {
   }
 
   edit(body) {
-    this.apiService.put('survey', body, this.id)
+    this.apiService.put('survey', this.id, body)
       .subscribe(
         (data: any) => {
           this.toastr.success('survey updated successful');
@@ -236,6 +236,7 @@ export class CreateSurveyComponent implements OnInit {
         (result: any) => {
           this.toastr.success('Survey fetch successfull');
           this.surveyForm.patchValue(result.data);
+          this.setQuestionnaires(result.data.questionnaires);
         },
         (error: any) => {
           // this.toastr.error(error);

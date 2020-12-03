@@ -24,10 +24,10 @@
         <!-- <mat-slide-toggle formControlName="IsAnonymous" class="mb-10">Make survey anonymous </mat-slide-toggle> -->
         <div class="survey-options">
             <div formArrayName="questionnaires" class="poll-options">
-                <h3 class="list-title">Add Survey Questions </h3>
-                {{questionDetails}}
+                <h3 class="list-title">Survey Questions </h3>
+                {{questionDetails | json}}
                 <ol class="list-style">
-                    <li *ngFor="let questionCtrl of surveyForm.get('questionnaires')['controls']; let i = index">
+                    <li *ngFor="let questionCtrl of surveyForm?.get('questionnaires')['controls']; let i = index">
                         <div [formGroupName]="i">
                             <div>
                                 <mat-form-field class="full-width">
@@ -44,12 +44,12 @@
                                     </mat-select>
                                 </mat-form-field> -->
 
-                                <div formGroupName="questionGroup" [ngSwitch]="selectedOption[i]">
+                                <div formGroupName="questionGroup" [ngSwitch]="questionDetails?.type">
                                     <div *ngSwitchCase="'Agree/ Disagree'">
-                                        <div *ngIf="questionCtrl.controls.questionGroup.controls.options">
+                                        <div *ngIf="questionCtrl?.controls?.questionGroup?.controls?.options">
                                             <ul class="question-type" formArrayName="options">
                                                 <li
-                                                    *ngFor="let optionCtrl of questionCtrl.controls.questionGroup.controls.options.controls let j = index">
+                                                    *ngFor="let optionCtrl of questionCtrl?.controls?.questionGroup?.controls?.options?.controls let j = index">
                                                     <div [formGroupName]="j">
                                                         <mat-form-field>
                                                             <input formControlName="optionText" matInput
@@ -66,10 +66,10 @@
                                         </div>
                                     </div>
                                     <div *ngSwitchCase="'Multiple choice'">
-                                        <div *ngIf="questionCtrl.controls.questionGroup.controls.options">
+                                        <div *ngIf="questionCtrl?.controls?.questionGroup?.controls?.options">
                                             <ul class="question-type" formArrayName="options">
                                                 <li
-                                                    *ngFor="let optionCtrl of questionCtrl.controls.questionGroup.controls.options.controls let j = index">
+                                                    *ngFor="let optionCtrl of questionCtrl?.controls.questionGroup?.controls.options?.controls let j = index">
                                                     <div [formGroupName]="j">
                                                         <mat-form-field>
                                                             <input formControlName="optionText" matInput

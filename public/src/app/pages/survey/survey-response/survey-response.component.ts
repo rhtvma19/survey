@@ -54,25 +54,10 @@ export class SurveyResponseComponent implements OnInit {
   }
 
   setQuestionnaires(que) {
-    // const surveyQuestionItem = this.formBuilder.group({
-    //   questiontitle: new FormControl('', Validators.required),
-    //   questiontype: new FormControl('', Validators.required),
-    //   questionGroup: new FormGroup({})
-    // });
-
     let control = <FormArray>this.surveyForm.controls.questionnaires;
     que.forEach(x => {
       control.push(this.formBuilder.group(x));
     });
-
-
-    // const vlans = new FormArray([]);
-    // que.forEach(x => {
-    //   // (this.surveyForm.get('questionnaires') as FormArray).push(surveyQuestionItem);
-    //   console.log(x);
-    //   vlans.push(this.formBuilder.group(x));
-    // });
-    // this.surveyForm.setControl('questionnaires', vlans);
   }
 
 

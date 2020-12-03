@@ -75,7 +75,7 @@ export class CreateSurveyComponent implements OnInit {
 
   // convenience getter for easy access to form fields
   get formControls() {
-    return this.surveyForm.controls;
+    return this.surveyForm?.controls;
   }
 
   onSeletquestiontypeMain(e) {
@@ -86,7 +86,7 @@ export class CreateSurveyComponent implements OnInit {
 
   }
   setQuestionnaires(que) {
-    let control = <FormArray>this.surveyForm.controls.questionnaires;
+    let control = <FormArray>this.surveyForm?.controls.questionnaires;
     que.forEach(x => {
       control.push(this.formBuilder.group(x));
     });
@@ -114,8 +114,8 @@ export class CreateSurveyComponent implements OnInit {
   }
 
   onRemoveQuestionOld(index) {
-    this.surveyForm.controls.questionnaires[index].controls.questionGroup = new FormGroup({});
-    this.surveyForm.controls.questionnaires[index].controls.questiontype = new FormControl({});
+    this.surveyForm?.controls.questionnaires[index]?.controls.questionGroup = new FormGroup({});
+    this.surveyForm?.controls.questionnaires[index]?.controls.questiontype = new FormControl({});
     (this.surveyForm.get('questionnaires') as FormArray).removeAt(index);
     this.selectedOption.splice(index, 1);
     console.log(this.surveyForm);
@@ -134,10 +134,10 @@ export class CreateSurveyComponent implements OnInit {
 
     const control = this.surveyForm.get('questionnaires') as FormArray;
 
-    (this.surveyForm.controls.questionnaires?.controls[index].controls?.questionGroup)?.addControl('options', options);
-    // (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
+    (this.surveyForm?.controls.questionnaires?.controls[index]?.controls?.questionGroup)?.addControl('options', options);
+    // (this.surveyForm?.controls.questionnaires?.controls[index]?.controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
 
-    this.clearFormArray((this.surveyForm.controls.questionnaires?.controls[index].controls.questionGroup.controls.options as FormArray));
+    this.clearFormArray((this.surveyForm?.controls.questionnaires?.controls[index]?.controls.questionGroup?.controls.options as FormArray));
 
     this.addOption(index);
     this.addOption(index);
@@ -155,11 +155,11 @@ export class CreateSurveyComponent implements OnInit {
     const optionGroup = new FormGroup({
       optionText: new FormControl('', Validators.required),
     });
-    (this.surveyForm.controls.questionnaires?.controls[index].controls.questionGroup.controls.options as FormArray).push(optionGroup);
+    (this.surveyForm?.controls.questionnaires?.controls[index]?.controls.questionGroup?.controls.options as FormArray).push(optionGroup);
   }
 
   removeOption(questionIndex, itemIndex) {
-    (this.surveyForm.controls.questionnaires.controls[questionIndex].controls.questionGroup.controls.options as FormArray).removeAt(itemIndex);
+    (this.surveyForm?.controls.questionnaires?.controls[questionIndex]?.controls.questionGroup?.controls.options as FormArray).removeAt(itemIndex);
   }
 
   prepareSurvey() {

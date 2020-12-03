@@ -13,13 +13,13 @@
             <input formControlName="phone" matInput placeholder="Enter Phone Number" maxlength="50" [required]="true">
         </mat-form-field>
 
-        <mat-form-field class="full-width">
+        <!-- <mat-form-field class="full-width">
             <mat-select formControlName="gender" placeholder="Select Type" [required]="true">
                 <mat-option *ngFor="let gen of gender" [value]="gen.value">
                     {{gen.value}}
                 </mat-option>
             </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
 
         <!-- <mat-slide-toggle formControlName="IsAnonymous" class="mb-10">Make survey anonymous </mat-slide-toggle> -->
         <div class="survey-options">
@@ -29,7 +29,6 @@
                 <ol class="list-style">
                     <li *ngFor="let questionCtrl of surveyForm.get('questionnaires')['controls']; let i = index">
                         <div [formGroupName]="i">
-                            {{i}}
                             <div>
                                 <mat-form-field class="full-width">
                                     <input formControlName="questiontitle" maxlength="200" matInput
@@ -45,7 +44,6 @@
                                     </mat-select>
                                 </mat-form-field> -->
 
-                                hiiiiiiiiiii
                                 <div formGroupName="questionGroup" [ngSwitch]="selectedOption[i]">
                                     <div *ngSwitchCase="'Agree/ Disagree'">
                                         <div *ngIf="questionCtrl.controls.questionGroup.controls.options">
@@ -58,13 +56,13 @@
                                                                 placeholder="option text" maxlength="100"
                                                                 [required]="true">
                                                         </mat-form-field>
-                                                        <button *ngIf="j>=2" (click)="removeOption(i,j)" color="warn">X
-                                                        </button>
+                                                        <!-- <button *ngIf="j>=2" (click)="removeOption(i,j)" color="warn">X
+                                                        </button> -->
                                                     </div>
                                                 </li>
                                             </ul>
-                                            <button mat-raised-button type="button" (click)="addOption(i)"
-                                                class="mat-sm-button add-option-btn" color="accent"> Add option</button>
+                                            <!-- <button mat-raised-button type="button" (click)="addOption(i)"
+                                                class="mat-sm-button add-option-btn" color="accent"> Add option</button> -->
                                         </div>
                                     </div>
                                     <div *ngSwitchCase="'Multiple choice'">
@@ -79,16 +77,16 @@
                                                                 [required]="true">
                                                         </mat-form-field>
 
-                                                        <button mat-raised-button *ngIf="j>=2"
+                                                        <!-- <button mat-raised-button *ngIf="j>=2"
                                                             (click)="removeOption(i,j)" color="warn">
                                                             X
-                                                        </button>
+                                                        </button> -->
 
                                                     </div>
                                                 </li>
                                             </ul>
-                                            <button mat-raised-button type="button" (click)="addOption(i)"
-                                                class="mat-sm-button add-option-btn" color="accent"> Add option</button>
+                                            <!-- <button mat-raised-button type="button" (click)="addOption(i)"
+                                                class="mat-sm-button add-option-btn" color="accent"> Add option</button> -->
                                         </div>
                                     </div>
                                     <div *ngSwitchCase="'Short Answer'">
@@ -102,17 +100,17 @@
                                 </div>
 
                             </div>
-                            <button *ngIf="i>0" mat-mini-fab color="warn" type="button" (click)="onRemoveQuestion(i)"
+                            <!-- <button *ngIf="i>0" mat-mini-fab color="warn" type="button" (click)="onRemoveQuestion(i)"
                                 class="poll-remove-btn">
                                 X
-                            </button>
+                            </button> -->
                         </div>
                     </li>
                 </ol>
                 <div fxLayout="row" fxLayoutAlign="end">
-                    <button type="button" mat-raised-button (click)="onAddQuestion()">
+                    <!-- <button type="button" mat-raised-button (click)="onAddQuestion()">
                         Add Question
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>

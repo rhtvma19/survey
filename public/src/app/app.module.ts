@@ -19,6 +19,7 @@ import { AllSurveysComponent } from './pages/all-surveys/all-surveys.component';
 import { MaterialModule } from './common/material.module';
 import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { SurveyResponseComponent } from './pages/survey/survey-response/survey-response.component';
 
 @NgModule({
 
@@ -43,6 +44,7 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
     HeaderComponent,
     AllSurveysComponent,
     CreateSurveyComponent,
+    SurveyResponseComponent,
     UserProfileComponent
   ],
   providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

@@ -1,4 +1,3 @@
-#wizard_container {
-  width: 90%;
-  margin: auto;
+.content {
+  max-width: 1159px !important;
 }

@@ -30,9 +30,9 @@ export class CreateSurveyComponent implements OnInit {
   id = 0;
   isAddMode = true;
   questions: questiontype[] = [
-    { value: 'Single choice', viewValue: 'Single choice' },
-    { value: 'Multi choice', viewValue: 'Multi choice' },
-    { value: 'Text', viewValue: 'Text' }
+    { value: 'Agree/ Disagree', viewValue: 'Agree/ Disagree' },
+    { value: 'Multiple choice', viewValue: 'Multiple choice' },
+    { value: 'Short Answer', viewValue: 'Short Answer' }
   ];
 
   constructor(
@@ -107,7 +107,7 @@ export class CreateSurveyComponent implements OnInit {
 
 
   onSeletquestiontype(questiontype, index) {
-    if (questiontype === 'Single choice' || questiontype === 'Multi choice') {
+    if (questiontype === 'Agree/ Disagree' || questiontype === 'Multiple choice') {
       this.addOptionControls(questiontype, index);
     }
   }

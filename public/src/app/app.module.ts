@@ -18,6 +18,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AllSurveysComponent } from './pages/all-surveys/all-surveys.component';
 import { MaterialModule } from './common/material.module';
 import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { CreateSurveyComponent } from './pages/create-survey/create-survey.compo
     SurveyComponent,
     HeaderComponent,
     AllSurveysComponent,
-    CreateSurveyComponent
+    CreateSurveyComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,

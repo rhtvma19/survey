@@ -43,7 +43,7 @@
                                     </mat-select>
                                 </mat-form-field>
                                 <div formGroupName="questionGroup" [ngSwitch]="selectedOption[i]">
-                                    <div *ngSwitchCase="'Single choice'">
+                                    <div *ngSwitchCase="'Agree/ Disagree'">
                                         <div *ngIf="questionCtrl.controls.questionGroup.controls.options">
                                             <ul class="question-type" formArrayName="options">
                                                 <li
@@ -72,7 +72,7 @@
                                             </mat-form-field>
                                         </div> -->
                                     </div>
-                                    <div *ngSwitchCase="'Multi choice'">
+                                    <div *ngSwitchCase="'Multiple choice'">
                                         <div *ngIf="questionCtrl.controls.questionGroup.controls.options">
                                             <ul class="question-type" formArrayName="options">
                                                 <li
@@ -105,7 +105,7 @@
                                             </mat-form-field>
                                         </div>
                                     </div>
-                                    <div *ngSwitchCase="'Text'">
+                                    <div *ngSwitchCase="'Short Answer'">
                                         <mat-form-field class="full-width">
                                             <textarea style="resize: none;" disabled matInput
                                                 placeholder="Textarea"></textarea>

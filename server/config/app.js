@@ -138,7 +138,27 @@ app.post('/register', (req, res, next) => {
 });
 
 
-// POST process the New survey - CREATE
+app.put('/user/:id', (req, res, next) => {
+  console.log(req.body);
+  const user = {
+    firstname,
+    lastname,
+    password,
+    phone,
+    about
+  } = req.body;
+
+  UserModel.findOneAndUpdate({ _id: req.params.id }, { $set: user }, { upsert: true, useFindAndModify: false },
+    (err, userResult) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ message: "There was a problem update usr." }).end();
+      }
+      return res.json({ message: "User Updated Successfully", data: userResult }).end();
+    });
+});
+
+
 app.post('/survey', (req, res, next) => {
   console.log(req.body);
   const survey = {
@@ -159,8 +179,7 @@ app.post('/survey', (req, res, next) => {
 });
 
 
-// POST process the New survey - CREATE
-app.post('/survey/:id', (req, res, next) => {
+app.put('/survey/:id', (req, res, next) => {
   console.log(req.body);
   const survey = {
     type,

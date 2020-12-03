@@ -10,12 +10,20 @@ const UserSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false,
     unique: true
   },
   password: {
     type: String,
     required: true
+  },
+  phone: {
+    type: Number,
+    required: false
+  },
+  about: {
+    type: String,
+    required: false
   }
 });
 

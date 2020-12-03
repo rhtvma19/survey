@@ -134,10 +134,10 @@ export class CreateSurveyComponent implements OnInit {
 
     const control = this.surveyForm.get('questionnaires') as FormArray;
 
-    (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('options', options);
+    (this.surveyForm.controls.questionnaires?.controls[index].controls?.questionGroup)?.addControl('options', options);
     // (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
 
-    this.clearFormArray((this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup.controls.options as FormArray));
+    this.clearFormArray((this.surveyForm.controls.questionnaires?.controls[index].controls.questionGroup.controls.options as FormArray));
 
     this.addOption(index);
     this.addOption(index);
@@ -188,7 +188,7 @@ export class CreateSurveyComponent implements OnInit {
         question.questionGroup.options.forEach(option => {
           const optionItem: Option = {
             // id: 0,
-            optiontext: option.optionText,
+            optiontext: option.optionText || 'NA',
             optioncolor: ''
 
           };

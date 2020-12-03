@@ -114,7 +114,8 @@
             </div>
         </div>
         <div class="button-row">
-            <button class="full-width" color="primary" type="submit" mat-raised-button [disabled]="!surveyForm?.valid">
+            <button class="full-width" color="primary" type="submit" mat-raised-button> 
+                <!-- [disabled]="!surveyForm?.valid" -->
                 <span *ngIf="isAddMode">Add New Survey</span>
                 <span *ngIf="!isAddMode">Update Survey</span>
             </button>

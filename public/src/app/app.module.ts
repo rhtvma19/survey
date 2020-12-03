@@ -5,7 +5,7 @@ import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
-
+import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './authentication/register/register.component';
@@ -21,6 +21,18 @@ import { CreateSurveyComponent } from './pages/create-survey/create-survey.compo
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 
 @NgModule({
+
+  imports: [
+    CommonModule,
+    BrowserModule,
+    AppRoutingModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
+  ],
   declarations: [
     AppComponent,
     RegisterComponent,
@@ -32,17 +44,6 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
     AllSurveysComponent,
     CreateSurveyComponent,
     UserProfileComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule, // required animations module
-    ToastrModule.forRoot(), // ToastrModule added
-
   ],
   providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],

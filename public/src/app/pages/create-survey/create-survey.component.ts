@@ -10,6 +10,11 @@ export interface questiontype {
   viewValue: string;
 }
 
+const QUESTIONTYPES: questiontype[] = [
+  { value: 'Agree/ Disagree', viewValue: 'Agree/ Disagree' },
+  { value: 'Multiple choice', viewValue: 'Multiple choice' },
+  { value: 'Short Answer', viewValue: 'Short Answer' }
+]
 @Component({
   selector: 'app-create-survey',
   templateUrl: './create-survey.component.html',
@@ -19,7 +24,7 @@ export class CreateSurveyComponent implements OnInit {
   surveyForm: FormGroup;
 
   selectedOption = [];
-
+  questiontype: any;
   editMode = false;
   types = [
     { id: 0, value: 'Multiple choice' },
@@ -29,11 +34,7 @@ export class CreateSurveyComponent implements OnInit {
 
   id = 0;
   isAddMode = true;
-  questions: questiontype[] = [
-    { value: 'Agree/ Disagree', viewValue: 'Agree/ Disagree' },
-    { value: 'Multiple choice', viewValue: 'Multiple choice' },
-    { value: 'Short Answer', viewValue: 'Short Answer' }
-  ];
+  questions: questiontype[] = QUESTIONTYPES;
 
   constructor(
     private apiService: ApiService,
@@ -44,7 +45,7 @@ export class CreateSurveyComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.id = this.route.snapshot.params['id'];
+    this.id = this.route.snapshot.params.id;
     this.isAddMode = !this.id;
 
     if (!this.isAddMode) {
@@ -63,7 +64,6 @@ export class CreateSurveyComponent implements OnInit {
       questionnaires: new FormArray([]),
       expirydate: new FormControl(Date.now(), [Validators.required])
     });
-    this.onAddQuestion();
   }
 
 
@@ -77,6 +77,19 @@ export class CreateSurveyComponent implements OnInit {
     return this.surveyForm.controls;
   }
 
+  onSeletquestiontypeMain(e) {
+    this.questiontype = e.value;
+    const length = (this.surveyForm.get('questionnaires') as FormArray).length;
+
+    // for (let i = 0; i <= length; i++) {
+    //   const control = this.surveyForm.get('questionnaires') as FormArray;
+    //   control.removeAt(i);
+    // }
+
+    this.clearFormArray((this.surveyForm.get('questionnaires') as FormArray));
+    this.onAddQuestion();
+
+  }
 
   onAddQuestion() {
     console.log(this.surveyForm);
@@ -88,6 +101,9 @@ export class CreateSurveyComponent implements OnInit {
 
     (this.surveyForm.get('questionnaires') as FormArray).push(surveyQuestionItem);
 
+    this.questions = QUESTIONTYPES.filter((val) => {
+      return val.value === this.questiontype;
+    });
   }
 
   onRemoveQuestion(index: number) {
@@ -107,7 +123,7 @@ export class CreateSurveyComponent implements OnInit {
 
 
   onSeletquestiontype(questiontype, index) {
-    if (questiontype === 'Agree/ Disagree' || questiontype === 'Multiple choice') {
+    if (questiontype === 'Agree/ Disagree' || questiontype === 'Multiple choice' || questiontype === 'Short Answer') {
       this.addOptionControls(questiontype, index);
     }
   }
@@ -119,7 +135,7 @@ export class CreateSurveyComponent implements OnInit {
     const control = this.surveyForm.get('questionnaires') as FormArray;
 
     (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('options', options);
-    (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
+    // (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
 
     this.clearFormArray((this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup.controls.options as FormArray));
 

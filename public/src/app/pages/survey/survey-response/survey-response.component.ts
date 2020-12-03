@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/common/services/api.service';
@@ -14,80 +14,34 @@ import { Survey, Option } from '../../create-survey/data-models';
 })
 export class SurveyResponseComponent implements OnInit {
   submitted = false;
-  questionCtrl: any;
-  form = new FormGroup({
-    firstname: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    lastname: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    country: new FormControl('', [Validators.required]),
-    age: new FormControl('', [Validators.required]),
-    gender: new FormControl('', [Validators.required]),
-    terms: new FormControl('', [Validators.required]),
-    question_1: new FormControl('', [Validators.required]),
-    question_2: new FormControl('', [Validators.required]),
-    question_3: new FormControl('', [Validators.required]),
-    q3additional_message: new FormControl('', [Validators.required]),
-    q5additional_message1: new FormControl('', [Validators.required]),
-    q5additional_message2: new FormControl('', [Validators.required]),
-    q5additional_message3: new FormControl('', [Validators.required]),
-  });
+  questionDetails: any;
+  surveyForm: FormGroup;
+  selectedOption = [];
+  id = 0;
 
   constructor(
     private apiService: ApiService,
     public router: Router,
     private route: ActivatedRoute,
     public authService: AuthService,
+    private formBuilder: FormBuilder,
     private toastr: ToastrService) { }
-
-  get f() {
-    return this.form.controls;
-  }
-
-  surveyForm: FormGroup;
-
-  selectedOption = [];
-
-  editMode = false;
-  types = [
-    { id: 0, value: 'Training' },
-    { id: 1, value: 'HR' }
-  ];
-
-  gender = [
-    { id: 0, value: 'male' },
-    { id: 1, value: 'female' }
-  ];
-
-  id = 0;
-  isAddMode = true;
-  questions: questiontype[] = [
-    { value: 'Single choice', viewValue: 'Single choice' },
-    { value: 'Multi choice', viewValue: 'Multi choice' },
-    { value: 'Text', viewValue: 'Text' }
-  ];
-
-
 
   ngOnInit() {
     this.id = this.route.snapshot.params.id;
     this.getByID(this.id);
+    this.initForm();
   }
 
   private initForm() {
-    const title = '';
-    const type = '';
-    const questionnaires = new FormArray([]);
-
-    this.surveyForm = new FormGroup({
-      name: new FormControl(title, [Validators.required]),
-      email: new FormControl(title, [Validators.required]),
-      phone: new FormControl(title, [Validators.required]),
-      gender: new FormControl(type, [Validators.required]),
-      questionnaires: new FormArray([]),
-      expirydate: new FormControl(Date.now(), [Validators.required])
+    this.surveyForm = this.formBuilder.group({
+      name: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [Validators.required]),
+      gender: new FormControl('', [Validators.required]),
+      questionnaires: this.formBuilder.array([])
     });
   }
-
 
   get getFormControls() {
     const control = this.surveyForm.get('questionnaires') as FormArray;
@@ -99,26 +53,28 @@ export class SurveyResponseComponent implements OnInit {
     return this.surveyForm.controls;
   }
 
+  setQuestionnaires(que) {
+    // const surveyQuestionItem = this.formBuilder.group({
+    //   questiontitle: new FormControl('', Validators.required),
+    //   questiontype: new FormControl('', Validators.required),
+    //   questionGroup: new FormGroup({})
+    // });
 
-  createSurvey(): void {
-    if (this.form.status === 'VALID') {
-      console.log(this.form.value);
-    }
-    console.log(this.form.value);
-    const data = this.form.value;
-    this.apiService.post('survey', data)
-      .subscribe(
-        response => {
-          console.log(response);
-          this.submitted = true;
-          this.toastr.success(response.message || 'Survey Successful');
-          this.router.navigate(['/all-survey']);
-        },
-        error => {
-          this.toastr.error(error.error.message);
-          console.log(error);
-        });
+    let control = <FormArray>this.surveyForm.controls.questionnaires;
+    que.forEach(x => {
+      control.push(this.formBuilder.group(x));
+    });
+
+
+    // const vlans = new FormArray([]);
+    // que.forEach(x => {
+    //   // (this.surveyForm.get('questionnaires') as FormArray).push(surveyQuestionItem);
+    //   console.log(x);
+    //   vlans.push(this.formBuilder.group(x));
+    // });
+    // this.surveyForm.setControl('questionnaires', vlans);
   }
+
 
   prepareSurvey() {
     const formData = this.surveyForm.value;
@@ -193,7 +149,10 @@ export class SurveyResponseComponent implements OnInit {
       .subscribe(
         (result: any) => {
           this.toastr.success('Survey fetch successfull');
-          this.questionCtrl = result.data;
+          this.questionDetails = result.data;
+          console.log(this.questionDetails);
+          this.surveyForm.patchValue(result.data);
+          this.setQuestionnaires(result.data.questionnaires);
         },
         (error: any) => {
           // this.toastr.error(error);
@@ -202,11 +161,11 @@ export class SurveyResponseComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.isAddMode) {
-      this.add(this.prepareSurvey());
-    } else {
-      this.edit(this.prepareSurvey());
-    }
+    // if (this.isAddMode) {
+    //   this.add(this.prepareSurvey());
+    // } else {
+    //   this.edit(this.prepareSurvey());
+    // }
   }
 
 }

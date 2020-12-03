@@ -48,7 +48,7 @@ export class SurveyComponent implements OnInit {
     }
     console.log(this.form.value);
     const data = this.form.value;
-    this.apiService.create('survey', data)
+    this.apiService.post('survey', data)
       .subscribe(
         response => {
           console.log(response);

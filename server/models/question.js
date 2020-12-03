@@ -14,12 +14,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var QuestionSchema = new Schema({
-    text: { type: String, required: true },
-    type: { type: String },
+    questiontitle: { type: String, required: true },
+    questiontype: { type: String },
     options: [
         {
-            optiontext: { type: String, required: true },
-            optioncolor: String
+            optiontext: { type: String, required: true }
         }
     ]
 });

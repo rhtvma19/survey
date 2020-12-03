@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/common/services/api.service';
 import { AuthService } from 'src/app/common/services/auth/auth.service';
-import { QuestionType } from '../../create-survey/create-survey.component';
+import { questiontype } from '../../create-survey/create-survey.component';
 import { Survey, Option } from '../../create-survey/data-models';
 
 @Component({
@@ -60,7 +60,7 @@ export class SurveyResponseComponent implements OnInit {
 
   id = 0;
   isAddMode = true;
-  questions: QuestionType[] = [
+  questions: questiontype[] = [
     { value: 'Single choice', viewValue: 'Single choice' },
     { value: 'Multi choice', viewValue: 'Multi choice' },
     { value: 'Text', viewValue: 'Text' }

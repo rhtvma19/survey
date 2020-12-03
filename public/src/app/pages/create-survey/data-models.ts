@@ -4,7 +4,7 @@ export class Survey {
         public user: string,
         public type: string,
         public title: string,
-        public expiryDate: Date,
+        public expirydate: Date,
         public questionnaires: Question[]
 
     ) { }
@@ -13,8 +13,8 @@ export class Survey {
 export class Question {
     constructor(
         // public id: number,
-        public type: string,
-        public text: string,
+        public questiontype: string,
+        public questiontitle: string,
         public options: Option[],
     ) { }
 }

@@ -124,8 +124,8 @@ app.post('/survey', (req, res, next) => {
     type,
     title,
     user,
-    expiryDate,
-    question
+    expirydate,
+    questionnaires
   } = req.body;
 
   SurveyModel.create(survey, (err, surveyResult) => {
@@ -159,7 +159,7 @@ app.get('/survey/user/:userId', (req, res, next) => {
 
 app.delete('/survey/:id', (req, res, next) => {
   const id = req.params.id;
-  SurveyModel.delete({ _id: id }, (err, surveys) => {
+  SurveyModel.findOneAndRemove({ _id: id }, (err, surveys) => {
     if (err) {
       return res.status(404).json({
         message: 'Error while deleting survey!',

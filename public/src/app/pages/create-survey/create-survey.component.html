@@ -2,20 +2,20 @@
 <mat-card>
     <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()" autocomplete="off">
         <mat-form-field class="full-width">
-            <input formControlName="surveyTitle" matInput placeholder="Enter Survey Title" maxlength="50"
+            <input formControlName="title" matInput placeholder="Enter Survey Title" maxlength="50"
                 [required]="true">
         </mat-form-field>
         <mat-form-field class="full-width">
-            <mat-select formControlName="surveyType" placeholder="Select Type" [required]="true">
-                <mat-option *ngFor="let surveyType of surveyTypes" [value]="surveyType.value">
-                    {{surveyType.value}}
+            <mat-select formControlName="type" placeholder="Select Type" [required]="true">
+                <mat-option *ngFor="let type of types" [value]="type.value">
+                    {{type.value}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
 
         <mat-form-field color="accent" appearance="fill">
             <mat-label>Expiry date</mat-label>
-            <input formControlName="expiryDate" matInput [matDatepicker]="picker2">
+            <input formControlName="expirydate" matInput [matDatepicker]="picker2">
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2 color="primary"></mat-datepicker>
         </mat-form-field>
@@ -23,20 +23,20 @@
 
         <!-- <mat-slide-toggle formControlName="IsAnonymous" class="mb-10">Make survey anonymous </mat-slide-toggle> -->
         <div class="survey-options">
-            <div formArrayName="surveyQuestions" class="poll-options">
+            <div formArrayName="questionnaires" class="poll-options">
                 <h3 class="list-title">Add Survey Questions </h3>
                 <ol class="list-style">
-                    <li *ngFor="let questionCtrl of surveyForm.get('surveyQuestions')['controls']; let i = index">
+                    <li *ngFor="let questionCtrl of surveyForm.get('questionnaires')['controls']; let i = index">
                         <div [formGroupName]="i">
                             <div>
                                 <mat-form-field class="full-width">
-                                    <input formControlName="questionTitle" maxlength="200" matInput
+                                    <input formControlName="questiontitle" maxlength="200" matInput
                                         placeholder="Question title" [required]="true">
                                 </mat-form-field>
                                 <mat-form-field class="full-width">
-                                    <mat-select formControlName="questionType" placeholder="Question type"
+                                    <mat-select formControlName="questiontype" placeholder="Question type"
                                         ng-model="myVar" [(value)]="selectedOption[i]"
-                                        (selectionChange)="onSeletQuestionType(selectedOption[i], i)" [required]="true">
+                                        (selectionChange)="onSeletquestiontype(selectedOption[i], i)" [required]="true">
                                         <mat-option *ngFor="let type of questions" [value]="type.value">
                                             {{type.viewValue}}
                                         </mat-option>

@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/common/services/api.service';
 import { AuthService } from 'src/app/common/services/auth/auth.service';
 import { Survey, Question, Option } from './data-models';
-export interface QuestionType {
+export interface questiontype {
   value: string;
   viewValue: string;
 }
@@ -21,14 +21,15 @@ export class CreateSurveyComponent implements OnInit {
   selectedOption = [];
 
   editMode = false;
-  surveyTypes = [
-    { id: 0, value: 'Training' },
-    { id: 1, value: 'HR' }
+  types = [
+    { id: 0, value: 'Multiple choice' },
+    { id: 1, value: 'Agree/ Disagree' },
+    { id: 2, value: 'Short Answer' }
   ];
 
   id = 0;
   isAddMode = true;
-  questions: QuestionType[] = [
+  questions: questiontype[] = [
     { value: 'Single choice', viewValue: 'Single choice' },
     { value: 'Multi choice', viewValue: 'Multi choice' },
     { value: 'Text', viewValue: 'Text' }
@@ -52,22 +53,22 @@ export class CreateSurveyComponent implements OnInit {
   }
 
   private initForm() {
-    const surveyTitle = '';
-    const surveyType = '';
-    const surveyQuestions = new FormArray([]);
+    const title = '';
+    const type = '';
+    const questionnaires = new FormArray([]);
 
     this.surveyForm = new FormGroup({
-      surveyTitle: new FormControl(surveyTitle, [Validators.required]),
-      surveyType: new FormControl(surveyType, [Validators.required]),
-      surveyQuestions: new FormArray([]),
-      expiryDate: new FormControl(false, [Validators.required])
+      title: new FormControl(title, [Validators.required]),
+      type: new FormControl(type, [Validators.required]),
+      questionnaires: new FormArray([]),
+      expirydate: new FormControl(Date.now(), [Validators.required])
     });
     this.onAddQuestion();
   }
 
 
   get getFormControls() {
-    const control = this.surveyForm.get('surveyQuestions') as FormArray;
+    const control = this.surveyForm.get('questionnaires') as FormArray;
     return control;
   }
 
@@ -80,47 +81,47 @@ export class CreateSurveyComponent implements OnInit {
   onAddQuestion() {
     console.log(this.surveyForm);
     const surveyQuestionItem = new FormGroup({
-      questionTitle: new FormControl('', Validators.required),
-      questionType: new FormControl('', Validators.required),
+      questiontitle: new FormControl('', Validators.required),
+      questiontype: new FormControl('', Validators.required),
       questionGroup: new FormGroup({})
     });
 
-    (this.surveyForm.get('surveyQuestions') as FormArray).push(surveyQuestionItem);
+    (this.surveyForm.get('questionnaires') as FormArray).push(surveyQuestionItem);
 
   }
 
   onRemoveQuestion(index: number) {
-    const control = this.surveyForm.get('surveyQuestions') as FormArray;
+    const control = this.surveyForm.get('questionnaires') as FormArray;
     control.removeAt(index);
     this.selectedOption.splice(index, 1);
     console.log(this.surveyForm);
   }
 
   onRemoveQuestionOld(index) {
-    this.surveyForm.controls.surveyQuestions[index].controls.questionGroup = new FormGroup({});
-    this.surveyForm.controls.surveyQuestions[index].controls.questionType = new FormControl({});
-    (this.surveyForm.get('surveyQuestions') as FormArray).removeAt(index);
+    this.surveyForm.controls.questionnaires[index].controls.questionGroup = new FormGroup({});
+    this.surveyForm.controls.questionnaires[index].controls.questiontype = new FormControl({});
+    (this.surveyForm.get('questionnaires') as FormArray).removeAt(index);
     this.selectedOption.splice(index, 1);
     console.log(this.surveyForm);
   }
 
 
-  onSeletQuestionType(questionType, index) {
-    if (questionType === 'Single choice' || questionType === 'Multi choice') {
-      this.addOptionControls(questionType, index);
+  onSeletquestiontype(questiontype, index) {
+    if (questiontype === 'Single choice' || questiontype === 'Multi choice') {
+      this.addOptionControls(questiontype, index);
     }
   }
 
-  addOptionControls(questionType, index) {
+  addOptionControls(questiontype, index) {
     const options = new FormArray([]);
     const showRemarksBox = new FormControl(false);
 
-    const control = this.surveyForm.get('surveyQuestions') as FormArray;
+    const control = this.surveyForm.get('questionnaires') as FormArray;
 
-    (this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup).addControl('options', options);
-    (this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
+    (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('options', options);
+    (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
 
-    this.clearFormArray((this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup.controls.options as FormArray));
+    this.clearFormArray((this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup.controls.options as FormArray));
 
     this.addOption(index);
     this.addOption(index);
@@ -138,31 +139,30 @@ export class CreateSurveyComponent implements OnInit {
     const optionGroup = new FormGroup({
       optionText: new FormControl('', Validators.required),
     });
-    (this.surveyForm.controls.surveyQuestions.controls[index].controls.questionGroup.controls.options as FormArray).push(optionGroup);
+    (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup.controls.options as FormArray).push(optionGroup);
   }
 
   removeOption(questionIndex, itemIndex) {
-    (this.surveyForm.controls.surveyQuestions.controls[questionIndex].controls.questionGroup.controls.options as FormArray).removeAt(itemIndex);
+    (this.surveyForm.controls.questionnaires.controls[questionIndex].controls.questionGroup.controls.options as FormArray).removeAt(itemIndex);
   }
 
   prepareSurvey() {
     const formData = this.surveyForm.value;
     console.log(formData);
     const id = 0;
-    const type = formData.surveyType;
-    const title = formData.surveyTitle;
-    const expiryDate = formData.expiryDate;
+    const type = formData.type;
+    const title = formData.title;
+    const expirydate = formData.expirydate;
     const user = this.authService.getUserId();
-    const questionnaires = [];
 
-    const surveyQuestions = formData.surveyQuestions;
-    // const optionArray = formData.surveyQuestions[0].questionGroup.options[0].optionText;
-    const survey = new Survey(user, type, title, expiryDate, questionnaires);
-    surveyQuestions.forEach((question, index, array) => {
+    const questionnaires = formData.questionnaires;
+    // const optionArray = formData.questionnaires[0].questionGroup.options[0].optionText;
+    const survey = new Survey(user, type, title, expirydate, []);
+    questionnaires.forEach((question, index, array) => {
       const questionItem = {
         // id: 0,
-        type: question.questionType,
-        text: question.questionTitle,
+        questiontype: question.questiontype,
+        questiontitle: question.questiontitle,
         options: []
       };
       // if (question.questionGroup.hasOwnProperty('showRemarksBox')) {

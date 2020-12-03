@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/common/services/api.service';
+import { AuthService } from 'src/app/common/services/auth/auth.service';
 
 @Component({
   selector: 'app-survey',
@@ -10,51 +11,27 @@ import { ApiService } from 'src/app/common/services/api.service';
   styleUrls: ['./survey.component.css']
 })
 export class SurveyComponent implements OnInit {
-  submitted = false;
-
-  form = new FormGroup({
-    firstname: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    lastname: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    country: new FormControl('', [Validators.required]),
-    age: new FormControl('', [Validators.required]),
-    gender: new FormControl('', [Validators.required]),
-    terms: new FormControl('', [Validators.required]),
-    question_1: new FormControl('', [Validators.required]),
-    question_2: new FormControl('', [Validators.required]),
-    question_3: new FormControl('', [Validators.required]),
-    q3additional_message: new FormControl('', [Validators.required]),
-    q5additional_message1: new FormControl('', [Validators.required]),
-    q5additional_message2: new FormControl('', [Validators.required]),
-    q5additional_message3: new FormControl('', [Validators.required]),
-  });
-
+  allSurvey: any = [];
+  id = 0;
   constructor(
     private apiService: ApiService,
     public router: Router,
+    private route: ActivatedRoute,
+    public authService: AuthService,
     private toastr: ToastrService) { }
 
-
   ngOnInit(): void {
+    this.getAllSurvey();
   }
 
-  get f() {
-    return this.form.controls;
-  }
 
-  createSurvey(): void {
-    if (this.form.status === 'VALID') {
-      console.log(this.form.value);
-    }
-    console.log(this.form.value);
-    const data = this.form.value;
-    this.apiService.post('survey', data)
+  getAllSurvey() {
+    this.apiService.get('surveys')
       .subscribe(
         response => {
           console.log(response);
-          this.submitted = true;
-          this.toastr.success(response.message || 'Survey Successful');
-          this.router.navigate(['/all-survey']);
+          this.toastr.success(response.message || 'Survey fetch Successful');
+          this.allSurvey = response.data;
         },
         error => {
           this.toastr.error(error.error.message);
@@ -62,6 +39,9 @@ export class SurveyComponent implements OnInit {
         });
   }
 
-}
+  open(id: number) {
+    this.router.navigate(['/survey-response/' + id]);
+  }
 
-// https://stackblitz.com/edit/angular-form-wizard?file=src%2Fapp%2Fapp.component.html
+
+}

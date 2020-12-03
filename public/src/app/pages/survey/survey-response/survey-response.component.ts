@@ -135,8 +135,8 @@ export class SurveyResponseComponent implements OnInit {
     questionnaires.forEach((question, index, array) => {
       const questionItem = {
         // id: 0,
-        type: question.type,
-        text: question.text,
+        questiontype: question.questiontype,
+        questiontitle: question.questiontitle,
         options: []
       };
       // if (question.questionGroup.hasOwnProperty('showRemarksBox')) {
@@ -153,7 +153,7 @@ export class SurveyResponseComponent implements OnInit {
           questionItem.options.push(optionItem);
         });
       }
-      survey.questionnaires.push(questionItem);
+      // survey.questionnaires.push(questionItem);
     });
 
     console.log(survey);

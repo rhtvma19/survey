@@ -194,6 +194,24 @@ app.get('/survey/:id', (req, res, next) => {
 });
 
 
+
+app.get('/surveys', (req, res, next) => {
+  SurveyModel.find({}, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching surveys! ',
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: surveys || [],
+    });
+  });
+});
+
+
 // now there can be as many route you want that must have the token to run, otherwise will show unauhorized access. Will show success 
 // when token auth is successfilly passed.
 app.get("/secret", passport.authenticate('jwt', { session: false }), (req, res) => {

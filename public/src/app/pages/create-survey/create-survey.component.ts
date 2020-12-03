@@ -139,7 +139,7 @@ export class CreateSurveyComponent implements OnInit {
     const optionGroup = new FormGroup({
       optionText: new FormControl('', Validators.required),
     });
-    (this.surveyForm.controls.questionnaires.controls[index].controls.questionGroup.controls.options as FormArray).push(optionGroup);
+    (this.surveyForm.controls.questionnaires?.controls[index].controls.questionGroup.controls.options as FormArray).push(optionGroup);
   }
 
   removeOption(questionIndex, itemIndex) {

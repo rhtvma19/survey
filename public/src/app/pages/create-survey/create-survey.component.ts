@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormArray, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/common/services/api.service';
@@ -68,13 +68,31 @@ export class CreateSurveyComponent implements OnInit {
   }
 
 
-  get getFormControls() {
-    const control = this.surveyForm.get('questionnaires') as FormArray;
+
+  getQuestionGroupOptionsForm(index): FormArray {
+    const control = this.getQuestionGroupForm(index).controls['options'] as FormArray;
+    return control;
+  }
+
+
+  getQuestionGroupForm(index) {
+    const control = this.getQuestionnairesIndexForm(index).controls['questionGroup'];
+    return control;
+  }
+
+  getQuestionnairesIndexForm(index) {
+    const control = this.getQuestionnairesForm.controls['' + index] as FormArray;
+    return control;
+  }
+
+
+  get getQuestionnairesForm() {
+    const control = this.surveyForm.controls['questionnaires'] as FormArray;
     return control;
   }
 
   // convenience getter for easy access to form fields
-  get formControls() {
+  get getSurveyForm() {
     return this.surveyForm?.controls;
   }
 
@@ -91,6 +109,7 @@ export class CreateSurveyComponent implements OnInit {
       control.push(this.formBuilder.group(x));
     });
   }
+
   onAddQuestion() {
     console.log(this.surveyForm);
     const surveyQuestionItem = new FormGroup({
@@ -113,13 +132,13 @@ export class CreateSurveyComponent implements OnInit {
     console.log(this.surveyForm);
   }
 
-  onRemoveQuestionOld(index) {
-    this.surveyForm?.controls.questionnaires[index]?.controls.questionGroup = new FormGroup({});
-    this.surveyForm?.controls.questionnaires[index]?.controls.questiontype = new FormControl({});
-    (this.surveyForm.get('questionnaires') as FormArray).removeAt(index);
-    this.selectedOption.splice(index, 1);
-    console.log(this.surveyForm);
-  }
+  // onRemoveQuestionOld(index) {
+  //   this.surveyForm?.controls.questionnaires[index]?.controls.questionGroup = new FormGroup({});
+  //   this.surveyForm?.controls.questionnaires[index]?.controls.questiontype = new FormControl({});
+  //   (this.surveyForm.get('questionnaires') as FormArray).removeAt(index);
+  //   this.selectedOption.splice(index, 1);
+  //   console.log(this.surveyForm);
+  // }
 
 
   onSeletquestiontype(questiontype, index) {
@@ -129,16 +148,11 @@ export class CreateSurveyComponent implements OnInit {
   }
 
   addOptionControls(questiontype, index) {
-    const options = new FormArray([]);
-    const showRemarksBox = new FormControl(false);
-
     const control = this.surveyForm.get('questionnaires') as FormArray;
-
-    (this.surveyForm?.controls.questionnaires?.controls[index]?.controls?.questionGroup)?.addControl('options', options);
-    // (this.surveyForm?.controls.questionnaires?.controls[index]?.controls.questionGroup).addControl('showRemarksBox', showRemarksBox);
-
-    this.clearFormArray((this.surveyForm?.controls.questionnaires?.controls[index]?.controls.questionGroup?.controls.options as FormArray));
-
+    const indexControl = control.get('' + index) as FormArray;
+    const questionGroupControl = indexControl.controls['questionGroup'] as FormArray;
+    this.getQuestionGroupForm(index).addControl('options', this.formBuilder.array([]));
+    this.clearFormArray(this.getQuestionGroupOptionsForm(index) as FormArray);
     this.addOption(index);
     this.addOption(index);
   }
@@ -155,11 +169,24 @@ export class CreateSurveyComponent implements OnInit {
     const optionGroup = new FormGroup({
       optionText: new FormControl('', Validators.required),
     });
-    (this.surveyForm?.controls.questionnaires?.controls[index]?.controls.questionGroup?.controls.options as FormArray).push(optionGroup);
+
+    const control = this.surveyForm.get('questionnaires') as FormArray;
+    const indexControl = control.get('' + index) as FormArray;
+    const questionGroupControl = indexControl.get('questionGroup') as FormArray;
+    const optionsControl = questionGroupControl.get('options') as FormArray;
+    // optionsControl.push(optionGroup);
+    this.getQuestionGroupOptionsForm(index).push(optionGroup);
+
+    // (this.surveyForm?.controls.questionnaires?.controls[index]?.controls.questionGroup?.controls.options as FormArray).push(optionGroup);
   }
 
   removeOption(questionIndex, itemIndex) {
-    (this.surveyForm?.controls.questionnaires?.controls[questionIndex]?.controls.questionGroup?.controls.options as FormArray).removeAt(itemIndex);
+    const control = this.surveyForm.get('questionnaires') as FormArray;
+    const indexControl = control.get('' + questionIndex) as FormArray;
+    const questionGroupControl = indexControl.get('questionGroup') as FormArray;
+    const optionsControl = questionGroupControl.get('options') as FormArray;
+    optionsControl.removeAt(itemIndex);
+    // (this.surveyForm?.controls.questionnaires?.controls[questionIndex]?.controls.questionGroup?.controls.options as FormArray).removeAt(itemIndex);
   }
 
   prepareSurvey() {
@@ -209,7 +236,7 @@ export class CreateSurveyComponent implements OnInit {
         response => {
           console.log(response);
           this.toastr.success(response.message || 'Survey creation Successful');
-          // this.router.navigate(['/login']);
+          this.router.navigate(['/all-survey']);
         },
         error => {
           this.toastr.error(error.error.message);
@@ -222,7 +249,7 @@ export class CreateSurveyComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.toastr.success('survey updated successful');
-          this.router.navigate(['/survey']);
+          this.router.navigate(['/all-survey']);
         },
         (error: any) => {
           // this.toastr.error(error);
@@ -236,7 +263,24 @@ export class CreateSurveyComponent implements OnInit {
         (result: any) => {
           this.toastr.success('Survey fetch successfull');
           this.surveyForm.patchValue(result.data);
+
+          result.data.questionnaires = result.data.questionnaires.map((val) => {
+            val.questionGroup = { options: val.options };
+            return val;
+          })
+
+          result.data.questionnaires.map((x, i) => {
+            // this.onAddQuestion();
+            // this.getQuestionGroupForm(i).addControl('options', this.formBuilder.array([]));
+            // this.getQuestionGroupOptionsForm(i).patchValue(x.options);
+            // x.options.map((y,index) => {
+            //   this.getQuestionGroupOptionsForm(index).push(this.formBuilder.group(y))
+            // });
+            //  this.getQuestionGroupOptionsForm(index).push(this.formBuilder.group(x))
+          });
           this.setQuestionnaires(result.data.questionnaires);
+
+
         },
         (error: any) => {
           // this.toastr.error(error);

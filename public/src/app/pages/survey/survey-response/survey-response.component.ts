@@ -119,7 +119,7 @@ export class SurveyResponseComponent implements OnInit {
       });
 
       const surveyQuestionItem = this.formBuilder.group({
-        questiontitle: new FormControl(x.questiontitle, Validators.required),
+        questiontitle: new FormControl({ value: x.questiontitle, disabled: true }, Validators.required),
         questiontype: new FormControl(x.questiontype, Validators.required),
         questionGroup: new FormGroup({})
       });
@@ -199,18 +199,6 @@ export class SurveyResponseComponent implements OnInit {
         });
   }
 
-  edit(body) {
-    this.apiService.put('survey', this.id, body)
-      .subscribe(
-        (data: any) => {
-          this.toastr.success('survey updated successful');
-          this.router.navigate(['/survey']);
-        },
-        (error: any) => {
-          // this.toastr.error(error);
-          console.log(error);
-        });
-  }
 
   onAddQuestion() {
     console.log(this.surveyForm);

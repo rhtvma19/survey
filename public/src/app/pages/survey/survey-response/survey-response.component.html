@@ -22,7 +22,7 @@
                             <div>
                                 <mat-form-field class="full-width">
                                     <input formControlName="questiontitle" maxlength="200" matInput
-                                        placeholder="Question title" [disabled]="true">
+                                        placeholder="Question title" disabled>
                                 </mat-form-field>
                                 <div formGroupName="questionGroup" [ngSwitch]="questionDetails?.type">
                                     <div *ngSwitchCase="'Agree/ Disagree'">

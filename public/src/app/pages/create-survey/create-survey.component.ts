@@ -103,11 +103,58 @@ export class CreateSurveyComponent implements OnInit {
     this.onAddQuestion();
 
   }
-  setQuestionnaires(que) {
+  setQuestionnairesa(que) {
     let control = <FormArray>this.surveyForm?.controls.questionnaires;
     que.forEach(x => {
       control.push(this.formBuilder.group(x));
     });
+  }
+
+  setQuestionnaires(que, questionType) {
+    const questions = que;
+
+    this.questions = QUESTIONTYPES.filter((val) => {
+      return val.value === questionType;
+    });
+
+
+    let control = <FormArray>this.surveyForm.controls.questionnaires;
+    que.forEach((x, i) => {
+
+      const surveyQuestionItem = this.formBuilder.group({
+        questiontitle: new FormControl(x.questiontitle, Validators.required),
+        questiontype: new FormControl(x.questiontype, Validators.required),
+        questionGroup: new FormGroup({})
+      });
+
+      control.push(surveyQuestionItem);
+      // this.setQuestionGroupOptions(x.questionGroup, i);
+    });
+
+    let controls = <FormArray>this.surveyForm.controls.questionnaires;
+
+    controls.controls.forEach((x, i) => {
+      this.getQuestionGroupForm(i).addControl('options', this.formBuilder.array([]));
+      if (questionType === 'Short Answer') {
+        this.getQuestionGroupForm(i).addControl('answerText', new FormControl('', [Validators.required]));
+      } else {
+        this.getQuestionGroupForm(i).addControl('answerText', new FormControl('', [Validators.required]));
+      }
+
+      const ffff = questions[i].questionGroup.options;
+      ffff.forEach((xx, ii) => {
+        const optionGroup = new FormGroup({
+          optionText: new FormControl(xx.optiontext, Validators.required),
+        });
+        this.getQuestionGroupOptionsForm(i).push(optionGroup);
+      });
+
+      console.log(this.getQuestionGroupForm(i));
+    });
+
+    let controlaaa = <FormArray>this.surveyForm.controls.questionnaires;
+
+    console.log(controlaaa);
   }
 
   onAddQuestion() {
@@ -257,7 +304,27 @@ export class CreateSurveyComponent implements OnInit {
         });
   }
 
+
+
   getByID(id: number) {
+    this.apiService.get('survey/' + id)
+      .subscribe(
+        (result: any) => {
+          this.toastr.success('Survey fetch successfull');
+          this.surveyForm.patchValue(result.data);
+          result.data.questionnaires = result.data.questionnaires.map((val) => {
+            val.questionGroup = { options: val.options };
+            return val;
+          });
+          this.setQuestionnaires(result.data.questionnaires, result.data.type);
+        },
+        (error: any) => {
+          // this.toastr.error(error);
+          console.log(error);
+        });
+  }
+
+  getByIDz(id: number) {
     this.apiService.get('survey/' + id)
       .subscribe(
         (result: any) => {
@@ -270,17 +337,9 @@ export class CreateSurveyComponent implements OnInit {
           })
 
           result.data.questionnaires.map((x, i) => {
-            // this.onAddQuestion();
-            // this.getQuestionGroupForm(i).addControl('options', this.formBuilder.array([]));
-            // this.getQuestionGroupOptionsForm(i).patchValue(x.options);
-            // x.options.map((y,index) => {
-            //   this.getQuestionGroupOptionsForm(index).push(this.formBuilder.group(y))
-            // });
-            //  this.getQuestionGroupOptionsForm(index).push(this.formBuilder.group(x))
           });
-          this.setQuestionnaires(result.data.questionnaires);
 
-
+          this.setQuestionnaires(result.data.questionnaires, '');
         },
         (error: any) => {
           // this.toastr.error(error);

@@ -274,6 +274,26 @@ app.get('/surveys', (req, res, next) => {
 });
 
 
+
+
+app.post('/result', (req, res, next) => {
+  console.log(req.body);
+  var result = new Result();
+  for (var key in req.body) {
+    result[key] = req.body[key];
+  }
+
+  result.survey = req.params.survey_id
+  result.question = req.params.question_id
+  result.save().
+    then((newresult) => {
+      console.log(newresult);
+      res.status(201).end();
+    }).catch((err) => {
+      res.status(500).send(err);
+    })
+});
+
 // now there can be as many route you want that must have the token to run, otherwise will show unauhorized access. Will show success 
 // when token auth is successfilly passed.
 app.get("/secret", passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -296,5 +316,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   return res.send('error');
 });
+
+
 
 module.exports = app;

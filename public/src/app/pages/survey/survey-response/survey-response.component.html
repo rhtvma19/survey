@@ -1,6 +1,7 @@
 <h2 class="page-title">Survey</h2>
 <mat-card>
-    <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <!-- (ngSubmit)="onSubmit()" -->
+    <form [formGroup]="surveyForm" autocomplete="off">
         <h4 class="list-title">Basic Information </h4>
         <mat-form-field class="full-width">
             <input formControlName="name" matInput placeholder="Enter Full Name" maxlength="50" [required]="true">
@@ -36,15 +37,25 @@
                                 <div formGroupName="questionGroup" [ngSwitch]="questionDetails?.type">
                                     <div *ngSwitchCase="'Agree/ Disagree'">
                                         <div *ngIf="questionCtrl?.controls?.questionGroup?.controls?.options">
+                                            <!-- <ul class="question-type"> -->
                                             <ul class="question-type" formArrayName="options">
                                                 <li
-                                                    *ngFor="let optionCtrl of questionCtrl?.controls?.questionGroup?.controls?.options?.controls let j = index">
+                                                    *ngFor="let optionCtrl of questionCtrl?.controls?.questionGroup?.controls let j = index">
+                                                    <!-- <li> -->
                                                     <div [formGroupName]="j">
                                                         <mat-form-field>
-                                                            <input formControlName="optiontext" matInput
+                                                            <input formControlName="answerText" matInput
                                                                 placeholder="option text" maxlength="100"
                                                                 [required]="true">
                                                         </mat-form-field>
+                                                        <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                            class="example-radio-group">
+                                                            <mat-radio-button class="example-radio-button"
+                                                                *ngFor="let season of optionMultiChoice[i]"
+                                                                [value]="season">
+                                                                {{season}}
+                                                            </mat-radio-button>
+                                                        </mat-radio-group>
                                                         <!-- <button *ngIf="j>=2" (click)="removeOption(i,j)" color="warn">X
                                                         </button> -->
                                                     </div>
@@ -63,7 +74,8 @@
                                                     <mat-radio-group aria-labelledby="example-radio-group-label"
                                                         class="example-radio-group">
                                                         <mat-radio-button class="example-radio-button"
-                                                            *ngFor="let season of optionQuestions[i]" [value]="season">
+                                                            *ngFor="let season of optionMultiChoice[i]"
+                                                            [value]="season">
                                                             {{season}}
                                                         </mat-radio-button>
                                                     </mat-radio-group>
@@ -83,7 +95,7 @@
                                     </div>
                                     <div *ngSwitchCase="'Short Answer'">
                                         <mat-form-field class="full-width">
-                                            <textarea formControlName="shortAnswerText" style="resize: none;" matInput
+                                            <textarea formControlName="answerText" style="resize: none;" matInput
                                                 placeholder="Textarea"></textarea>
                                         </mat-form-field>
 
@@ -107,7 +119,7 @@
             </div>
         </div>
         <div class="button-row">
-            <button class="full-width" color="primary" type="submit" mat-raised-button>
+            <button class="full-width" color="primary" type="submit" (click)="onSubmit()" mat-raised-button>
                 <span>Submit Survey</span>
                 <!--
                 <span *ngIf="editMode">Update Survey</span> -->

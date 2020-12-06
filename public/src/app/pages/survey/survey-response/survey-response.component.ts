@@ -18,7 +18,7 @@ export class SurveyResponseComponent implements OnInit {
   surveyForm: FormGroup;
   selectedOption = [];
   id = 0;
-  optionQuestions = {};
+  optionMultiChoice = {};
   favoriteSeason;
 
   constructor(
@@ -46,7 +46,8 @@ export class SurveyResponseComponent implements OnInit {
   }
 
   getQuestionGroupOptionsForm(index): FormArray {
-    const control = this.getQuestionGroupForm(index).controls['options'] as FormArray;
+    const control = this.getQuestionGroupForm(index).controls['options'];
+    // control.addControl('choice', this.formBuilder.array([]));
     return control;
   }
 
@@ -115,13 +116,13 @@ export class SurveyResponseComponent implements OnInit {
 
 
 
-  setQuestionnaires(que) {
+  setQuestionnaires(que, questionType) {
     const questions = que;
     let control = <FormArray>this.surveyForm.controls.questionnaires;
     que.forEach((x, i) => {
-      this.optionQuestions[i] = [];
+      this.optionMultiChoice[i] = [];
       x.questionGroup.options.forEach((xx, ii) => {
-        this.optionQuestions[i].push(xx.optiontext);
+        this.optionMultiChoice[i].push(xx.optiontext);
       });
 
       const surveyQuestionItem = this.formBuilder.group({
@@ -138,8 +139,15 @@ export class SurveyResponseComponent implements OnInit {
 
     controls.controls.forEach((x, i) => {
       this.getQuestionGroupForm(i).addControl('options', this.formBuilder.array([]));
-      // this.getQuestionGroupForm(i).patchValue(x);
+      if (questionType === 'Short Answer') {
+        this.getQuestionGroupForm(i).addControl('answerText', new FormControl('', [Validators.required]));
+      } else {
+        this.getQuestionGroupForm(i).addControl('answerText', new FormControl('', [Validators.required]));
+      }
+
+
       const optionControl = this.getQuestionGroupForm(i).controls['options'] as FormArray;
+
       const ffff = questions[i].questionGroup.options;
       console.log(ffff);
       ffff.forEach((xx, ii) => {
@@ -167,38 +175,20 @@ export class SurveyResponseComponent implements OnInit {
   prepareSurvey() {
     const formData = this.surveyForm.value;
     console.log(formData);
-    const id = 0;
-    const type = formData.type;
-    const title = formData.title;
-    const expirydate = formData.expirydate;
-    const user = this.authService.getUserId();
-    const questionnaires1 = [];
     const questionnaires = formData.questionnaires;
-    // const optionArray = formData.questionnaires[0].questionGroup.options[0].optiontext;
-    const survey = new Survey(user, type, title, expirydate, questionnaires1);
+    const survey = formData;
+    let choices: any;
+
     questionnaires.forEach((question, index, array) => {
-      const questionItem = {
-        // id: 0,
+      choices.push({
         questiontype: question.questiontype,
         questiontitle: question.questiontitle,
-        options: []
-      };
-      // if (question.questionGroup.hasOwnProperty('showRemarksBox')) {
-      //   questionItem.hasRemarks = question.questionGroup.showRemarksBox;
-      // }
-      if (question.questionGroup.hasOwnProperty('options')) {
-        question.questionGroup.options.forEach(option => {
-          const optionItem: Option = {
-            // id: 0,
-            optiontext: option.optiontext,
-            optioncolor: ''
-
-          };
-          questionItem.options.push(optionItem);
-        });
-      }
-      // survey.questionnaires.push(questionItem);
+        answerText: question.questionGroup?.answerText
+      });
     });
+    // survey.questionItem = questionItem;
+    survey.surveyId = this.id;
+    survey.choices = choices;
 
     console.log(survey);
     console.log('posting survey');
@@ -206,11 +196,11 @@ export class SurveyResponseComponent implements OnInit {
   }
 
   add(body) {
-    this.apiService.post('survey', body)
+    this.apiService.post('/result', body)
       .subscribe(
         response => {
           console.log(response);
-          this.toastr.success(response.message || 'Survey creation Successful');
+          this.toastr.success(response.message || 'Survey submitted Successful');
           // this.router.navigate(['/login']);
         },
         error => {
@@ -265,7 +255,7 @@ export class SurveyResponseComponent implements OnInit {
           //   this.onAddQuestion();
           // });
 
-          this.setQuestionnaires(result.data.questionnaires);
+          this.setQuestionnaires(result.data.questionnaires, result.data.type);
         },
         (error: any) => {
           // this.toastr.error(error);
@@ -275,7 +265,7 @@ export class SurveyResponseComponent implements OnInit {
 
   onSubmit() {
     // if (this.isAddMode) {
-    //   this.add(this.prepareSurvey());
+    this.add(this.prepareSurvey());
     // } else {
     //   this.edit(this.prepareSurvey());
     // }

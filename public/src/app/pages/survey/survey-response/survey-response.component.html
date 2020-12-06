@@ -37,18 +37,19 @@
                                 <div formGroupName="questionGroup" [ngSwitch]="questionDetails?.type">
                                     <div *ngSwitchCase="'Agree/ Disagree'">
                                         <div *ngIf="questionCtrl?.controls?.questionGroup?.controls?.options">
-                                            <!-- <ul class="question-type"> -->
-                                            <ul class="question-type" formArrayName="options">
-                                                <li
-                                                    *ngFor="let optionCtrl of questionCtrl?.controls?.questionGroup?.controls let j = index">
-                                                    <!-- <li> -->
-                                                    <div [formGroupName]="j">
-                                                        <mat-form-field>
-                                                            <input formControlName="answerText" matInput
+                                            <ul class="question-type">
+                                            <!-- <ul class="question-type" formArrayName="options"> -->
+                                                <!-- <li
+                                                    *ngFor="let optionCtrl of questionCtrl?.controls?.questionGroup?.controls let j = index"> -->
+                                                    <li>
+                                                    <!-- <div [formGroupName]="j"> -->
+                                                        <!-- <mat-form-field> -->
+                                                            <!-- <input formControlName="answerText" matInput
                                                                 placeholder="option text" maxlength="100"
                                                                 [required]="true">
-                                                        </mat-form-field>
-                                                        <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                        </mat-form-field> -->
+                                                        <mat-radio-group formControlName="answerText"
+                                                            aria-labelledby="example-radio-group-label"
                                                             class="example-radio-group">
                                                             <mat-radio-button class="example-radio-button"
                                                                 *ngFor="let season of optionMultiChoice[i]"
@@ -58,7 +59,7 @@
                                                         </mat-radio-group>
                                                         <!-- <button *ngIf="j>=2" (click)="removeOption(i,j)" color="warn">X
                                                         </button> -->
-                                                    </div>
+                                                    <!-- </div> -->
                                                 </li>
                                             </ul>
                                             <!-- <button mat-raised-button type="button" (click)="addOption(i)"
@@ -68,10 +69,12 @@
                                     <div *ngSwitchCase="'Multiple choice'">
                                         <div *ngIf="questionCtrl?.controls?.questionGroup?.controls?.options">
                                             <ul class="question-type" formArrayName="options">
-                                                <!-- <li  *ngFor="let optionCtrl of questionCtrl?.controls.questionGroup?.controls.options?.controls; let j = index"> -->
-                                                <li>
+                                                <li
+                                                    *ngFor="let optionCtrl of questionCtrl?.controls.questionGroup?.controls.options?.controls; let j = index">
+                                                    <!-- <li> -->
                                                     <!-- [(ngModel)]="favoriteSeason" -->
-                                                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                    <mat-radio-group formControlName="answerText"
+                                                        aria-labelledby="example-radio-group-label"
                                                         class="example-radio-group">
                                                         <mat-radio-button class="example-radio-button"
                                                             *ngFor="let season of optionMultiChoice[i]"
@@ -89,8 +92,6 @@
                                                     </div> -->
                                                 </li>
                                             </ul>
-                                            <!-- <button mat-raised-button type="button" (click)="addOption(i)"
-                                                class="mat-sm-button add-option-btn" color="accent"> Add option</button> -->
                                         </div>
                                     </div>
                                     <div *ngSwitchCase="'Short Answer'">
@@ -98,31 +99,17 @@
                                             <textarea formControlName="answerText" style="resize: none;" matInput
                                                 placeholder="Textarea"></textarea>
                                         </mat-form-field>
-
                                     </div>
-
                                 </div>
-
                             </div>
-                            <!-- <button *ngIf="i>0" mat-mini-fab color="warn" type="button" (click)="onRemoveQuestion(i)"
-                                class="poll-remove-btn">
-                                X
-                            </button> -->
                         </div>
                     </li>
                 </ol>
-                <div fxLayout="row" fxLayoutAlign="end">
-                    <!-- <button type="button" mat-raised-button (click)="onAddQuestion()">
-                        Add Question
-                    </button> -->
-                </div>
             </div>
         </div>
         <div class="button-row">
-            <button class="full-width" color="primary" type="submit" (click)="onSubmit()" mat-raised-button>
+            <button class="full-width" color="primary" type="submit" (click)="onSubmit()">
                 <span>Submit Survey</span>
-                <!--
-                <span *ngIf="editMode">Update Survey</span> -->
             </button>
         </div>
     </form>

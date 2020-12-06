@@ -25,6 +25,7 @@ mongoDB.once('open', () => {
 
 const UserModel = require('../models/user');
 const SurveyModel = require('../models/survey');
+const ResultModel = require('../models/result');
 
 
 // strategy for using web token authentication
@@ -276,22 +277,42 @@ app.get('/surveys', (req, res, next) => {
 
 
 
+app.get('/result', (req, res, next) => {
+  ResultModel.find({}, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching surveys! ',
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: surveys || [],
+    });
+  });
+});
+
+
+
 app.post('/result', (req, res, next) => {
   console.log(req.body);
-  var result = new Result();
-  for (var key in req.body) {
-    result[key] = req.body[key];
-  }
+  const surveyResultData = {
+    choices,
+    email,
+    name,
+    phone,
+    surveyId
+  } = req.body;
 
-  result.survey = req.params.survey_id
-  result.question = req.params.question_id
-  result.save().
-    then((newresult) => {
-      console.log(newresult);
-      res.status(201).end();
-    }).catch((err) => {
-      res.status(500).send(err);
-    })
+  ResultModel.create(surveyResultData, (err, surveyResult) => {
+    console.log(err, surveyResult);
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ message: "There was a problem submitting survey." }).end();
+    }
+    return res.json({ message: "Survey SUbmitted Successfully", data: surveyResult }).end();
+  });
 });
 
 // now there can be as many route you want that must have the token to run, otherwise will show unauhorized access. Will show success 

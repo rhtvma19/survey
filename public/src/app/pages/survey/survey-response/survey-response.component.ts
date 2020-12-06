@@ -151,6 +151,7 @@ export class SurveyResponseComponent implements OnInit {
       const ffff = questions[i].questionGroup.options;
       console.log(ffff);
       ffff.forEach((xx, ii) => {
+        // xx.answerText = new FormControl('', [Validators.required]);
         optionControl.controls.push(xx);
       });
 
@@ -177,7 +178,7 @@ export class SurveyResponseComponent implements OnInit {
     console.log(formData);
     const questionnaires = formData.questionnaires;
     const survey = formData;
-    let choices: any;
+    let choices: any = [];
 
     questionnaires.forEach((question, index, array) => {
       choices.push({
@@ -186,6 +187,7 @@ export class SurveyResponseComponent implements OnInit {
         answerText: question.questionGroup?.answerText
       });
     });
+
     // survey.questionItem = questionItem;
     survey.surveyId = this.id;
     survey.choices = choices;
@@ -196,7 +198,7 @@ export class SurveyResponseComponent implements OnInit {
   }
 
   add(body) {
-    this.apiService.post('/result', body)
+    this.apiService.post('result', body)
       .subscribe(
         response => {
           console.log(response);

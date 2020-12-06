@@ -54,15 +54,14 @@ export class HeaderComponent implements OnInit {
 
   preparePDF(data) {
     const doc = new jsPDF.jsPDF();
-    let col = ['id', 'name','email', 'phone', 'questiontype', 'questiontitle', 'answerText'];
+    let col = ['Survey ID', 'Name', 'Email', 'Phone', 'Question Type', 'Question Title', 'Answer'];
     let rows = [];
 
-    data.forEach(element => {
-
+    data.forEach((element, index) => {
       const choices = element.choices;
       choices.forEach((choice, i) => {
         let currentRow = [];
-        currentRow.push(i);
+        currentRow.push(index + 1);
         if (i === 0) {
           currentRow.push(element.name);
           currentRow.push(element.email);

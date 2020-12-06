@@ -277,7 +277,7 @@ app.get('/surveys', (req, res, next) => {
 
 
 
-app.get('/result', (req, res, next) => {
+app.get('/result/:id', (req, res, next) => {
   ResultModel.find({}, (err, surveys) => {
     if (err) {
       return res.status(404).json({

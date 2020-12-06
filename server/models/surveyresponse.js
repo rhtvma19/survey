@@ -7,8 +7,7 @@ var SurveyResponseSchema = new Schema({
   type: { type: String },
   survey: { type: Schema.ObjectId, required: true, ref: 'survey' },
   question: { type: Schema.ObjectId, required: true },
-  choices: [{ type: Schema.ObjectId, required: true }],
-  // created_at: { type: Date, default: Date.now }
+  choices: [{ type: Schema.ObjectId, required: true }]
 });
 
 SurveyResponseSchema.set('timestamps', true);

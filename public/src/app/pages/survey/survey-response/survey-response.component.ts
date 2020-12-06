@@ -109,13 +109,6 @@ export class SurveyResponseComponent implements OnInit {
     this.addOption(index);
   }
 
-
-
-
-  // (this.surveyForm.get('questionnaires') as FormArray).push(surveyQuestionItem);
-
-
-
   setQuestionnaires(que, questionType) {
     const questions = que;
     let control = <FormArray>this.surveyForm.controls.questionnaires;
@@ -165,11 +158,6 @@ export class SurveyResponseComponent implements OnInit {
 
   setQuestionGroupOptions(questionGroup, i) {
     const control = this.getQuestionGroupForm(i) as FormArray;
-    // control.push(this.formBuilder.group(options));
-
-    // options.forEach((x) => {
-    //   control.push(this.formBuilder.group(x));
-    // });
   }
 
 
@@ -234,9 +222,6 @@ export class SurveyResponseComponent implements OnInit {
 
     (this.surveyForm.get('questionnaires') as FormArray).push(surveyQuestionItem);
 
-    // this.questions = QUESTIONTYPES.filter((val) => {
-    //   return val.value === this.questiontype;
-    // });
   }
 
   getByID(id: number) {
@@ -252,11 +237,6 @@ export class SurveyResponseComponent implements OnInit {
             val.questionGroup = { options: val.options };
             return val;
           });
-
-          // result.data.questionnaires.map((x, i) => {
-          //   this.onAddQuestion();
-          // });
-
           this.setQuestionnaires(result.data.questionnaires, result.data.type);
         },
         (error: any) => {
@@ -266,14 +246,6 @@ export class SurveyResponseComponent implements OnInit {
   }
 
   onSubmit() {
-    // if (this.isAddMode) {
     this.add(this.prepareSurvey());
-    // } else {
-    //   this.edit(this.prepareSurvey());
-    // }
   }
-
 }
-
-
-// https://stackblitz.com/edit/angular-form-wizard?file=src%2Fapp%2Fapp.component.html

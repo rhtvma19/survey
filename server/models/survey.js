@@ -13,8 +13,6 @@ var SurveySchema = new Schema({
     ref: 'user'
   },
   questionnaires: [QuestionSchema],
-  // created_at: { type: Date, default: Date.now },
-  // updated_at: { type: Date, default: Date.now }
 });
 
 SurveySchema.set('timestamps', true);

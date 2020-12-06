@@ -11,8 +11,6 @@ var QuestionSchema = new Schema({
         }
     ]
 });
-// module.exports=mongoose.model('Question',questionSchema);
-// module.exports.schema=questionSchema;
 
 QuestionSchema.set('timestamps', true);
 module.exports.schema = QuestionSchema;

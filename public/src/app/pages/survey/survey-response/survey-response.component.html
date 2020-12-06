@@ -13,16 +13,6 @@
         <mat-form-field class="full-width">
             <input formControlName="phone" matInput placeholder="Enter Phone Number" maxlength="50" [required]="true">
         </mat-form-field>
-
-        <!-- <mat-form-field class="full-width">
-            <mat-select formControlName="gender" placeholder="Select Type" [required]="true">
-                <mat-option *ngFor="let gen of gender" [value]="gen.value">
-                    {{gen.value}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field> -->
-
-        <!-- <mat-slide-toggle formControlName="IsAnonymous" class="mb-10">Make survey anonymous </mat-slide-toggle> -->
         <div class="survey-options">
             <div formArrayName="questionnaires" class="poll-options">
                 <h3 class="list-title">Survey Questions </h3>
@@ -32,22 +22,13 @@
                             <div>
                                 <mat-form-field class="full-width">
                                     <input formControlName="questiontitle" maxlength="200" matInput
-                                        placeholder="Question title" [disabled]="true" >
+                                        placeholder="Question title" [disabled]="true">
                                 </mat-form-field>
                                 <div formGroupName="questionGroup" [ngSwitch]="questionDetails?.type">
                                     <div *ngSwitchCase="'Agree/ Disagree'">
                                         <div *ngIf="questionCtrl?.controls?.questionGroup?.controls?.options">
                                             <ul class="question-type">
-                                                <!-- <ul class="question-type" formArrayName="options"> -->
-                                                <!-- <li
-                                                    *ngFor="let optionCtrl of questionCtrl?.controls?.questionGroup?.controls let j = index"> -->
                                                 <li>
-                                                    <!-- <div [formGroupName]="j"> -->
-                                                    <!-- <mat-form-field> -->
-                                                    <!-- <input formControlName="answerText" matInput
-                                                                placeholder="option text" maxlength="100"
-                                                                [required]="true">
-                                                        </mat-form-field> -->
                                                     <mat-radio-group formControlName="answerText"
                                                         aria-labelledby="example-radio-group-label"
                                                         class="example-radio-group">
@@ -57,21 +38,13 @@
                                                             {{season}}
                                                         </mat-radio-button>
                                                     </mat-radio-group>
-                                                    <!-- <button *ngIf="j>=2" (click)="removeOption(i,j)" color="warn">X
-                                                        </button> -->
-                                                    <!-- </div> -->
                                                 </li>
                                             </ul>
-                                            <!-- <button mat-raised-button type="button" (click)="addOption(i)"
-                                                class="mat-sm-button add-option-btn" color="accent"> Add option</button> -->
                                         </div>
                                     </div>
                                     <div *ngSwitchCase="'Multiple choice'">
                                         <div *ngIf="questionCtrl?.controls?.questionGroup?.controls?.options">
                                             <ul class="question-type">
-                                                <!-- <ul class="question-type" formArrayName="options"> -->
-                                                <!-- <li
-                                                        *ngFor="let optionCtrl of questionCtrl?.controls?.questionGroup?.controls let j = index"> -->
                                                 <li>
                                                     <mat-radio-group formControlName="answerText"
                                                         aria-labelledby="example-radio-group-label"
@@ -82,9 +55,6 @@
                                                             {{season}}
                                                         </mat-radio-button>
                                                     </mat-radio-group>
-                                                    <!-- <button *ngIf="j>=2" (click)="removeOption(i,j)" color="warn">X
-                                                            </button> -->
-                                                    <!-- </div> -->
                                                 </li>
                                             </ul>
                                         </div>

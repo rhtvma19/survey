@@ -294,7 +294,6 @@ app.get('/result/:id', (req, res, next) => {
 });
 
 
-
 app.post('/result', (req, res, next) => {
   console.log(req.body);
   const surveyResultData = {

@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   });
 
   constructor(
-    private _apiService: ApiService,
+    private apiService: ApiService,
     public router: Router,
     private toastr: ToastrService,
     public dataService: DataService) { }
@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
 
     const data = this.form.value;
 
-    this._apiService.create('login', data)
+    this.apiService.post('login', data)
       .subscribe(
         response => {
           console.log(response);

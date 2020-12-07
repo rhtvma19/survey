@@ -19,15 +19,15 @@ export class ApiService {
   }
 
 
-  create(URL, data): Observable<any> {
+  post(URL, data): Observable<any> {
     return this.httpClient.post(`${baseURL}/${URL}`, data);
   }
 
-  read(URL): Observable<any> {
+  get(URL): Observable<any> {
     return this.httpClient.get(`${baseURL}/${URL}`);
   }
 
-  update(URL, id, data): Observable<any> {
+  put(URL, id, data): Observable<any> {
     return this.httpClient.put(`${`${baseURL}/${URL}`}/${id}`, data);
   }
 

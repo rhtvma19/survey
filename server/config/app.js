@@ -25,6 +25,7 @@ mongoDB.once('open', () => {
 
 const UserModel = require('../models/user');
 const SurveyModel = require('../models/survey');
+const ResultModel = require('../models/result');
 
 
 // strategy for using web token authentication
@@ -91,6 +92,27 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+app.get('/user/:userId', (req, res, next) => {
+  const userId = req.params.userId;
+  UserModel.find({ _id: userId }, (err, user) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching User!',
+        error: err
+      });
+    }
+
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: user[0] || [],
+    });
+  });
+});
+
+
+
 // POST process the New user create - CREATE
 app.post('/register', (req, res, next) => {
   const user = {
@@ -117,35 +139,70 @@ app.post('/register', (req, res, next) => {
 });
 
 
-// POST process the New survey - CREATE
-app.post('/survey', (req, res, next) => {
-  const survey = {
-    age,
-    country,
-    email,
+app.put('/user/:id', (req, res, next) => {
+  console.log(req.body);
+  const user = {
     firstname,
-    gender,
     lastname,
-    q3additional_message,
-    q5additional_message1,
-    q5additional_message2,
-    q5additional_message3,
-    question_1,
-    question_2,
-    question_3,
-    terms,
+    password,
+    phone,
+    about
+  } = req.body;
+
+  UserModel.findOneAndUpdate({ _id: req.params.id }, { $set: user }, { upsert: true, useFindAndModify: false },
+    (err, userResult) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ message: "There was a problem update usr." }).end();
+      }
+      return res.json({ message: "User Updated Successfully", data: userResult }).end();
+    });
+});
+
+
+app.post('/survey', (req, res, next) => {
+  console.log(req.body);
+  const survey = {
+    type,
+    title,
+    user,
+    expirydate,
+    questionnaires
   } = req.body;
 
   SurveyModel.create(survey, (err, surveyResult) => {
     if (err) {
+      console.log(err);
       return res.status(400).json({ message: "There was a problem creating survey." }).end();
     }
     return res.json({ message: "Survey Created Successfully", data: surveyResult }).end();
   });
 });
 
-app.get('/survey', (req, res, next) => {
-  SurveyModel.find({}, (err, surveys) => {
+
+app.put('/survey/:id', (req, res, next) => {
+  console.log(req.body);
+  const survey = {
+    type,
+    title,
+    user,
+    expirydate,
+    questionnaires
+  } = req.body;
+
+  SurveyModel.findOneAndUpdate({ _id: req.params.id }, { $set: survey }, { upsert: true, useFindAndModify: false },
+    (err, surveyResult) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ message: "There was a problem update survey." }).end();
+      }
+      return res.json({ message: "Survey Updated Successfully", data: surveyResult }).end();
+    });
+});
+
+app.get('/survey/user/:userId', (req, res, next) => {
+  const userId = req.params.userId;
+  SurveyModel.find({ user: userId }, (err, surveys) => {
     if (err) {
       return res.status(404).json({
         message: 'Error while fetching widgets!',
@@ -161,6 +218,101 @@ app.get('/survey', (req, res, next) => {
   });
 });
 
+
+
+app.delete('/survey/:id', (req, res, next) => {
+  const id = req.params.id;
+  SurveyModel.findOneAndRemove({ _id: id }, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while deleting survey!',
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok'
+    });
+  });
+});
+
+
+
+app.get('/survey/:id', (req, res, next) => {
+  const id = req.params.id;
+  console.log(id);
+  SurveyModel.find({ _id: id }, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching survey! ' + id,
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: surveys[0] || [],
+    });
+  });
+});
+
+
+
+app.get('/surveys', (req, res, next) => {
+  SurveyModel.find({}, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching surveys! ',
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: surveys || [],
+    });
+  });
+});
+
+
+
+
+app.get('/result/:id', (req, res, next) => {
+  ResultModel.find({}, (err, surveys) => {
+    if (err) {
+      return res.status(404).json({
+        message: 'Error while fetching surveys! ',
+        error: err
+      });
+    }
+    // return with data
+    return res.status(200).json({
+      message: 'ok',
+      data: surveys || [],
+    });
+  });
+});
+
+
+app.post('/result', (req, res, next) => {
+  console.log(req.body);
+  const surveyResultData = {
+    choices,
+    email,
+    name,
+    phone,
+    surveyId
+  } = req.body;
+
+  ResultModel.create(surveyResultData, (err, surveyResult) => {
+    console.log(err, surveyResult);
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ message: "There was a problem submitting survey." }).end();
+    }
+    return res.json({ message: "Survey SUbmitted Successfully", data: surveyResult }).end();
+  });
+});
 
 // now there can be as many route you want that must have the token to run, otherwise will show unauhorized access. Will show success 
 // when token auth is successfilly passed.
@@ -184,5 +336,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   return res.send('error');
 });
+
+
 
 module.exports = app;

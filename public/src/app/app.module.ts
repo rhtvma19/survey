@@ -5,7 +5,7 @@ import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
-
+import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './authentication/register/register.component';
@@ -18,8 +18,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { AllSurveysComponent } from './pages/all-surveys/all-surveys.component';
 import { MaterialModule } from './common/material.module';
 import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { SurveyResponseComponent } from './pages/survey/survey-response/survey-response.component';
 
 @NgModule({
+
+  imports: [
+    CommonModule,
+    BrowserModule,
+    AppRoutingModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
+  ],
   declarations: [
     AppComponent,
     RegisterComponent,
@@ -29,18 +43,9 @@ import { CreateSurveyComponent } from './pages/create-survey/create-survey.compo
     SurveyComponent,
     HeaderComponent,
     AllSurveysComponent,
-    CreateSurveyComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule, // required animations module
-    ToastrModule.forRoot(), // ToastrModule added
-
+    CreateSurveyComponent,
+    SurveyResponseComponent,
+    UserProfileComponent
   ],
   providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],

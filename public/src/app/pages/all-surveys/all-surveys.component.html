@@ -1,31 +1,33 @@
 <div class="content" role="main">
-
   <table class="table table-hover">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
+        <th scope="col">#Survey Number</th>
+        <th scope="col">Title</th>
+        <th scope="col">Type</th>
+        <th scope="col"># of questions</th>
+        <th scope="col">Survey Start Date</th>
+        <th scope="col">Survey EndDate</th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>@twitter</td>
+      <tr *ngFor="let survey of allSurvey; index as i">
+        <th scope="row">{{ i + 1  }}</th>
+        <td>{{ survey.title }}</td>
+        <td>{{ survey.type }}</td>
+        <td>{{ survey.questionnaires.length }}</td>
+        <td>{{ survey.updatedAt }}</td>
+        <td>{{ survey.expirydate }}</td>
+        <td>
+          <a class="btn btn-primary" (click)="edit(survey._id)">
+            Edit
+          </a>
+
+          <a class="btn btn-danger" (click)="delete(survey._id)">
+            Delete
+          </a>
+        </td>
       </tr>
     </tbody>
   </table>

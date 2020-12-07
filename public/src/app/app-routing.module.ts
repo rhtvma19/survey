@@ -9,6 +9,8 @@ import { SurveyComponent } from './pages/survey/survey.component';
 import { GuardService as AuthGuard } from './common/services/auth/guard.service';
 import { AllSurveysComponent } from './pages/all-surveys/all-surveys.component';
 import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
+import { SurveyResponseComponent } from './pages/survey/survey-response/survey-response.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -16,8 +18,11 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent },
   { path: 'survey', component: SurveyComponent },
+  { path: 'survey-response/:id', component: SurveyResponseComponent },
+  { path: 'user-profile', canActivate: [AuthGuard], component: UserProfileComponent },
   { path: 'all-survey', canActivate: [AuthGuard], component: AllSurveysComponent },
   { path: 'create-survey', canActivate: [AuthGuard], component: CreateSurveyComponent },
+  { path: 'survey-edit/:id', canActivate: [AuthGuard], component: CreateSurveyComponent },
   { path: 'about', component: AboutComponent },
   { path: '**', component: LoginComponent },
 ];
